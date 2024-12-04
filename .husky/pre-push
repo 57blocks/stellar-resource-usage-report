@@ -1,0 +1,2 @@
+[ -n "$GITHUB_ACTIONS" ] && exit 0
+npm run lint
