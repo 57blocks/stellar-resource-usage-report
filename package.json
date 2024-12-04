@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky",
-    "lint": "eslint . --ext .ts",
+    "lint": "npx eslint --fix .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "changelog": "changeset"
   },
