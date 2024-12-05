@@ -1,1 +1,1 @@
-export const STELLAR_TEST = "TESTNET";
+export const STELLAR_TEST = 'TESTNET';

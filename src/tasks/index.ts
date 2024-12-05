@@ -1,3 +1,3 @@
-import { log } from "@/share/index";
+import { log } from '@/share/index';
 
-log("Hello from tasks!");
+log('Hello from tasks!');
