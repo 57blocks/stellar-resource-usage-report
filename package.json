@@ -9,7 +9,7 @@
     "build": "npm run clean && vite build",
     "start": "npm run build && node dist/main.js",
     "dev": "vite",
-    "lint": "prettier --write --ignore-unknown ./**/*.ts && eslint --fix ./**/*.ts",
+    "lint": "eslint --fix ./**/*.ts",
     "test": "vitest -c ./vitest.config.ts --run",
     "coverage": "vitest run --coverage",
     "prepare": "husky",
