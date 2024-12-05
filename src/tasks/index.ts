@@ -1,3 +1,4 @@
-import { log } from '@/share/index';
+import { Color } from '@/types/enums';
+import { printTerminalMessage } from '@/share/index';
 
-log('Hello from tasks!');
+printTerminalMessage('Hello from tasks!', Color.GREEN);

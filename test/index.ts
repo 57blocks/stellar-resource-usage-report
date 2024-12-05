@@ -1,5 +1,5 @@
 import { test } from '@/index';
-import { Network } from '@/enums';
+import { Network } from '@/types/enums';
 import { describe, it, expect } from 'vitest';
 
 describe('main', () => {
