@@ -1,4 +1,4 @@
-import { test } from '@/index';
+import { test } from '@/main';
 import { Network } from '@/types/enums';
 import { describe, it, expect } from 'vitest';
 

@@ -5,3 +5,5 @@ export const test = (network: Network) => {
   printTerminalMessage(network, Color.GREEN);
   return network;
 };
+
+test(Network.MAINNET);

@@ -3,7 +3,7 @@ import { Color } from "@/types/enums";
 
 export const printTerminalMessage = (message: string, color?: Color) => {
   const _color = color || Color.WHITE;
-  switch (_color.toLowerCase()) {
+  switch (_color) {
     case Color.RED:
       console.log(chalk.red(message));
       break;

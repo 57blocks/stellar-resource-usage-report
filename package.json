@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc",
-    "start": "npm run build && node dist/src/index.js",
+    "build": "npm run clean && vite build",
+    "start": "npm run build && node dist/main.js",
     "lint": "prettier --write --ignore-unknown ./**/*.ts && eslint --fix ./**/*.ts",
     "test": "vitest -c ./vitest.config.ts --run",
     "coverage": "vitest run --coverage",
@@ -29,6 +29,7 @@
     "husky": "^9.1.7",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
+    "vite": "^6.0.2",
     "vitest": "^2.1.8"
   },
   "keywords": [],
