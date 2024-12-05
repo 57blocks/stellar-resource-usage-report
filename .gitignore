@@ -17,14 +17,8 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
-# nyc test coverage
-.nyc_output
-
 # OSX
 .DS_STORE
-
-# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
 
 # Bower dependency directory (https://bower.io/)
 bower_components
@@ -37,7 +31,6 @@ build/Release
 
 # Dependency directories
 node_modules/
-jspm_packages/
 
 # TypeScript v1 declaration files
 typings/
@@ -60,10 +53,5 @@ typings/
 # dotenv environment variables file
 .env
 
-# next.js build output
-.next
-
 dist/
-
-options.txt
 

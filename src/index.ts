@@ -1,7 +1,7 @@
-import { Network } from '@/enums';
-import { log } from '@/share';
+import { Network, Color } from '@/enums';
+import { printTerminalMessage } from '@/share';
 
 export const test = (network: Network) => {
-  log(network);
+  printTerminalMessage(network, Color.GREEN);
   return network;
 };

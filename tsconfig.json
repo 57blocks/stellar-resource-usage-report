@@ -8,6 +8,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "outDir": "./dist" /* Redirect output structure to the directory. */,
     "resolveJsonModule": true /* Enable importing .json files. */,
     "isolatedModules": true /* Ensure that each file can be safely transpiled without relying on other imports. */,
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
