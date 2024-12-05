@@ -1,0 +1,3 @@
+[ -n "$GITHUB_ACTIONS" ] && exit 0
+echo "Commit message: $1"
+npx commitlint --edit $1
