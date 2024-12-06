@@ -1,15 +1,14 @@
 {
   "name": "stellar-resource-usage",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "src/main.ts",
   "private": true,
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && vite build",
-    "start": "bun run src/main.ts",
+    "start": "bun --watch test ./src/main.ts",
     "start:huild": "npm run build && node dist/main.js",
-    "dev": "vite",
     "lint": "eslint --fix ./**/*.ts",
     "test": "vitest -c ./vitest.config.ts --run",
     "coverage": "vitest run --coverage",
