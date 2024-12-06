@@ -23,19 +23,23 @@ cd stellar-resource-usage-report-private && pnpm install
 ```
 
 ```
-npm run test
+bun run test // npm run test
 ```
 
 ```
-npm run build
+bun run build // npm run build
 ```
 
 ```
-npm run lint
+bun run lint // npm run lint
 ```
 
 ```
-npm run start
+bun run start // npm run start
+```
+
+```
+bun run changelog // npm run changelog
 ```
 
 ## Commit rules
