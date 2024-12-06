@@ -6,6 +6,12 @@ A nodeJS based version of the resource usage tool that allows developers to use 
 
 ## Running the project
 
+**Prerequirements**
+
+```
+curl -fsSL https://bun.sh/install | bash
+```
+
 **Start the project**
 
 ```
