@@ -1,0 +1,15 @@
+addReviewers: true;
+addAssignees: false;
+
+reviewers: 
+  - shan57blocks 
+  - leslie555 
+  - sunnybai01;
+
+assignees: 
+  - shan57blocks 
+  - leslie555 
+  - sunnybai01;
+
+numberOfAssignees: 1;
+numberOfReviewers: 1;
