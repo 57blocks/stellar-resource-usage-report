@@ -13,7 +13,8 @@
     "test": "vitest -c ./vitest.config.ts --run",
     "coverage": "vitest run --coverage",
     "prepare": "husky",
-    "changelog": "changeset"
+    "changelog": "changeset",
+    "release": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.10",
