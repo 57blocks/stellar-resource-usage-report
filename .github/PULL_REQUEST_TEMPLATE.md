@@ -1,19 +1,8 @@
----
-name: New PR Template
-about: Describe this purpose for this PR
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## Description
 <!-- Describe the purpose and scope of this PR -->
 
-## Screenshots
+## creenshots/Snapshots
 <!-- If applicable, add screenshots or GIFs to showcase the changes visually -->
-
-## Screenshots/Snapshots？
 
 ## Checklist
 - [ ] I have tested my code thoroughly
