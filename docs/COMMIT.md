@@ -24,4 +24,12 @@ Real world examples can look like this:
   fix: fix the login issue
 ```
 
+```
+  docs: add new documentation for commit rule
+```
+
+```
+  feat(server): add new endpoint.
+```
+
 
