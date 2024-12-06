@@ -21,6 +21,7 @@
     "noUnusedParameters": true /* Report errors on unused parameters. */,
     "preserveConstEnums": true /* Do not erase const enum declarations in generated code. */,
     // "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
+    "sourceMap": true /* Create source map files for emitted JavaScript files. */,
   },
   "include": ["src", "test", "commitlint.config.ts"],
   "exclude": ["node_modules", "dist"],
