@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import { Color } from "@/types/enums";
+import chalk from 'chalk';
+import { Color } from '@/types/enums';
 
 export const printTerminalMessage = (message: string, color?: Color) => {
   const _color = color || Color.WHITE;
@@ -30,6 +30,6 @@ export const printTerminalMessage = (message: string, color?: Color) => {
       break;
     default:
       console.log(chalk.white(message));
-      break
+      break;
   }
 };
