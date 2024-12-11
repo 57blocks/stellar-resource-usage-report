@@ -1,7 +1,7 @@
 ## Description
 <!-- Describe the purpose and scope of this PR -->
 
-## creenshots/Snapshots
+## Screenshots/Snapshots
 <!-- If applicable, add screenshots or GIFs to showcase the changes visually -->
 
 ## Checklist
