@@ -2,7 +2,7 @@
   "name": "stellar-resource-usage",
   "version": "0.1.0",
   "main": "index.ts",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist",
