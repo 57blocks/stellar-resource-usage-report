@@ -1,3 +1,4 @@
+import Table from 'tty-table';
 import chalk from 'chalk';
 import { Color } from '@/types/enums';
 
@@ -32,4 +33,18 @@ export const printTerminalMessage = (message: string, color?: Color) => {
       console.log(chalk.white(message));
       break;
   }
+};
+
+export const printTable = (header: string[], rows: any[]) => {
+  const tableConfig = {
+    borderStyle: 'solid',
+    paddingBottom: 0,
+    headerAlign: 'center',
+    align: 'center',
+    color: 'green',
+    truncate: '...',
+  };
+  const t3 = Table(header, rows, tableConfig);
+  console.log(t3.render());
+  return t3.toString();
 };
