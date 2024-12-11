@@ -1,26 +1,15 @@
 import { printTable } from '@/share';
+import { anyObj } from '@/types';
 
 /**
  * Print a message to the terminal (use chalk to color the message)
  * @param message message to print
  */
-const calcResource = (message: string) => {
-  const tableData = {
-    cpu_insns: 132918280,
-    mem_bytes: 48017296,
-    entry_reads: 43,
-    entry_writes: 21,
-    read_bytes: 212012,
-    write_bytes: 68452,
-    events_and_return_bytes: 8272,
-    min_txn_bytes: 76132,
-    max_entry_bytes: 66920,
-    max_key_bytes: 352,
-  };
+const calcResource = (data: anyObj | string[][]) => {
+  const tableData = Array.isArray(data) ? data : Object.entries(data);
+  printTable(tableData);
 
-  printTable(['Stellar Resource Usage', message], Object.entries(tableData));
-
-  return message;
+  return data;
 };
 
 export default calcResource;

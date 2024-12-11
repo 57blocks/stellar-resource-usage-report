@@ -1,49 +1,61 @@
-# stellar-resource-usage-report-private
+# stellar-resource-usage
 
-## Summary
+[![NPM version](https://badge.fury.io/js/stellar-resource-usage.svg)](https://www.npmjs.com/package/stellar-resource-usage) 
 
-A nodeJS based version of the resource usage tool that allows developers to use the resource usage tool to generate resource for reference when writing tests.
+# Summary
 
-## Running the project
+---
 
-**Prerequirements**
+As a resource utilization tool based on Node.js, it allows developers to generate resources using the resource utilization tool for reference when writing tests.
 
-```
-curl -fsSL https://bun.sh/install | bash
-```
+# Example Report
+![screenshot](./mockups/report.png)
 
-**Start the project**
+# Installation
 
-```
-git clone git@github.com:57blocks/stellar-resource-usage-report-private.git
-```
+---
 
-```
-cd stellar-resource-usage-report-private && pnpm install
-```
+**npm**
 
-```
-bun run test // npm run test
+```sh
+npm i stellar-resource-usage
 ```
 
-```
-bun run build // npm run build
+**pnpm**
+
+```sh
+pnpm add stellar-resource-usage
 ```
 
-```
-bun run lint // npm run lint
+**bun**
+
+```sh
+bun add stellar-resource-usage
 ```
 
-```
-bun run start // npm run start
+# Usage
+
+---
+
+```ts
+import calcResource from "stellar-resource-usage";
+
+....
+ const stats = {
+      cpu_insns: 132918280,
+      mem_bytes: 48017296,
+      entry_reads: 43,
+      entry_writes: 21,
+      read_bytes: 212012,
+      write_bytes: 68452,
+      events_and_return_bytes: 8272,
+      min_txn_bytes: 76132,
+      max_entry_bytes: 66920,
+      max_key_bytes: 352,
+    };
+  
+  calcResource(stats)
 ```
 
-```
-bun run changelog // npm run changelog
-```
-
-## Commit rules
-
-* [commit rules](./docs/COMMIT.md)
 
 
