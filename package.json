@@ -1,7 +1,7 @@
 {
   "name": "stellar-resource-usage",
   "version": "0.1.0",
-  "main": "src/main.ts",
+  "main": "index.ts",
   "private": true,
   "type": "module",
   "scripts": {
@@ -33,7 +33,7 @@
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },
-  "keywords": [],
+  "keywords": ["stellar", "resource-usage", "monitoring", "cli", "nodejs", "typescript"],
   "author": "",
   "license": "MIT",
   "description": "",
