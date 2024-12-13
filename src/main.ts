@@ -23,8 +23,8 @@ const getStatsFromTxRes = (sim: rpc.Api.SimulateTransactionSuccessResponse): TXR
   };
 };
 
-const getStatsFromTx = (tx: rpc.Api.GetSuccessfulTransactionResponse) => {
-  if (!tx.resultMetaXdr) return {};
+const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) => {
+  if (!tx || !tx.resultMetaXdr) return {};
   const metrics: anyObj = {
     mem_byte: null,
   };
@@ -74,7 +74,7 @@ const getStatsFromTx = (tx: rpc.Api.GetSuccessfulTransactionResponse) => {
  */
 const calcResource = (
   simRes: rpc.Api.SimulateTransactionSuccessResponse,
-  tx: rpc.Api.GetSuccessfulTransactionResponse
+  tx?: rpc.Api.GetSuccessfulTransactionResponse
 ) => {
   const stats_txRes = getStatsFromTxRes(simRes);
   const stats_tx = getStatsFromTx(tx);
@@ -90,8 +90,8 @@ const calcResource = (
 
   Object.entries(stats).forEach(([key, value]) => {
     const limit = standardConfig[key];
-    const isExceeded = value > limit;
-    const isTaken70 = value > limit * 0.7;
+    const isExceeded = limit ? value > limit : false;
+    const isTaken70 = limit ? value > limit * 0.7 : false;
     res.push([key, value, limit, isTaken70 ? '⚠️' : isExceeded ? '❌' : '✅']);
   });
 
