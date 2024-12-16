@@ -15,17 +15,15 @@ const calcResource = (
   const stats_txRes = getStatsFromTxRes(simRes);
   const stats_tx = getStatsFromTx(tx);
 
-  const standardConfig = STELLAR_LIMITS_CONFIG as anyObj;
-
   const stats = {
     ...stats_txRes,
     ...stats_tx,
-  };
+  } as anyObj;
 
   const res: (string | number)[][] = [];
 
   Object.entries(stats).forEach(([key, value]) => {
-    const limit = standardConfig[key];
+    const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
     const isExceeded = limit ? value > limit : false;
     const isTaken70 = limit ? value > limit * 0.8 : false;
     res.push([key, value, limit, isTaken70 ? '⚠️' : isExceeded ? '❌' : '✅']);
