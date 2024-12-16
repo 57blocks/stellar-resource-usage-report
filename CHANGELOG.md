@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.2
+
+### Patch Changes
+
+- d69c687: fix: fix the reference error and remove the unused function
+
 ## 1.0.1
 
 ### Patch Changes
