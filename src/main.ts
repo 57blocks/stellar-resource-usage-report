@@ -23,12 +23,9 @@ const calcResource = (
     const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
     const isExceeded = limit ? value > limit : false;
     const isTaken80 = limit ? value > limit * 0.8 : false;
-    res.push([
-      key,
-      value,
-      limit,
-      isTaken80 ? `ℹ️ (used ${((value / limit) * 100).toFixed(2)} %)` : isExceeded ? '❌' : '✅',
-    ]);
+
+    const percent = ((value / limit) * 100).toFixed(2) + ' %';
+    res.push([key, value, limit, isExceeded ? `❌ (used ${percent})` : isTaken80 ? `ℹ️ (used ${percent})` : '✅']);
   });
 
   printTable(res);
