@@ -23,8 +23,11 @@ export const getStatsFromTxRes = (sim: rpc.Api.SimulateTransactionSuccessRespons
 
 export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) => {
   if (!tx || !tx.resultMetaXdr) return {};
-  const metrics: anyObj = {
-    mem_byte: null,
+  const metrics: Record<string, number | undefined> = {
+    cpu_insn: undefined,
+    mem_byte: undefined,
+    ledger_read_byte: undefined,
+    ledger_write_byte: undefined,
   };
 
   tx?.resultMetaXdr
@@ -32,14 +35,19 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
     .sorobanMeta()
     ?.diagnosticEvents()
     .forEach((e) => {
-      const event = e.event();
-      const topics = event.body().v0().topics();
-      const is_core_metrics_event = topics.some((topic) => scValToNative(topic) === 'core_metrics');
+      const eventBody = e.event().body().v0();
+      const topics = eventBody.topics().map(scValToNative);
 
-      for (const metric in metrics) {
-        const is_metric = topics.some((topic) => scValToNative(topic) === metric);
+      const itemData = scValToNative(eventBody.data());
+      if (topics.includes('core_metrics')) {
+        console.log('==', topics, itemData, '\n');
+      }
 
-        if (is_core_metrics_event && is_metric) metrics[metric] = Number(scValToNative(event.body().v0().data()));
+      if (!topics.includes('core_metrics')) return;
+
+      const matchedMetric = Object.keys(metrics).find((metric) => topics.includes(metric));
+      if (matchedMetric) {
+        metrics[matchedMetric] = Number(scValToNative(eventBody.data()));
       }
     });
 
@@ -60,8 +68,9 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
     );
 
   return {
+    mem_bytes: metrics.mem_byte,
+    cpu_insns: metrics.cpu_insn,
     min_txn_bytes: tx ? tx.envelopeXdr.toXDR().length : undefined,
     max_entry_bytes: tx ? (entries?.length ? Math.max(...entries) : 0) : undefined,
-    mem_bytes: metrics.mem_byte,
   };
 };
