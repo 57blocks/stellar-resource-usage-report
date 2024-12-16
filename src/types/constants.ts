@@ -10,4 +10,4 @@ export const STELLAR_LIMITS_CONFIG = {
   max_key_bytes: 1000,
   min_txn_bytes: 100 * 1024,
   max_entry_bytes: 1000 * 1024,
-} as const;
+};
