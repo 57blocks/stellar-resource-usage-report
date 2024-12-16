@@ -31,7 +31,7 @@ const calcResource = (
 
   printTable(res);
 
-  // for testing purposes
+  // For testing purposes
   return true;
 };
 
