@@ -1,5 +1,6 @@
-import { printTable } from '@/share';
 import { describe, it, expect } from 'vitest';
+
+import { printTable } from '@/share';
 
 describe('main', () => {
   it('log table data', () => {
