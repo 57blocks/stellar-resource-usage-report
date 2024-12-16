@@ -1,44 +1,85 @@
-/* eslint-env node */
-export default {
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'import'],
-  root: true,
-  rules: {
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-require-imports': 'warn',
-    '@typescript-eslint/no-unused-expressions': 'warn',
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      // ignore unused variables that start with an underscore or only have one character
-      { argsIgnorePattern: '^_|^.$', varsIgnorePattern: '^_|^.$' },
-    ],
-    '@typescript-eslint/no-var-requires': 'off',
-    'import/newline-after-import': 'error',
-    'import/order': [
-      'error',
-      {
-        groups: [['builtin', 'external'], 'internal'],
-        'newlines-between': 'always',
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import _import from 'eslint-plugin-import';
+import globals from 'globals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
+});
+
+export default [
+  {
+    files: ['**/*.ts', '**/*.js'],
+    rules: { 'no-undef': 'off' },
+  },
+  {
+    ignores: ['**/node_modules', '**/build', '**/scripts'],
+  },
+  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
+  {
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+      import: _import,
+    },
+
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+        ...globals.browser,
+        ...globals.jest,
+        NodeJS: 'readonly',
+        React: 'readonly',
+        JSX: 'readonly',
       },
-    ],
-    'no-empty-pattern': 'off',
-    'react/react-in-jsx-scope': 'off',
-    'spaced-comment': ['error', 'always'],
+
+      parser: tsParser,
+    },
+
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-expressions': 'warn',
+
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_|^.$',
+          varsIgnorePattern: '^_|^.$',
+        },
+      ],
+
+      '@typescript-eslint/no-var-requires': 'off',
+
+      'import/order': [
+        'error',
+        {
+          groups: [['builtin', 'external'], 'internal'],
+          'newlines-between': 'always',
+        },
+      ],
+
+      'import/newline-after-import': 'error',
+      'no-empty-pattern': 'off',
+      'no-undef': 'error',
+      'spaced-comment': ['error', 'always'],
+    },
   },
-  // exclude: ['node_modules', 'build', 'scripts'],
-  ignorePatterns: ['node_modules', 'build', 'scripts', 'next-env.d.ts'],
-  env: {
-    node: true,
+  {
+    files: ['**/*.ts'],
+
+    rules: {
+      'no-undef': 'off',
+    },
   },
-  globals: {
-    NodeJS: 'readonly',
-  },
-};
+];
