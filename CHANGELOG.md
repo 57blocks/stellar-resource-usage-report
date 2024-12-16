@@ -1,5 +1,16 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.4
+
+### Patch Changes
+
+- 0dc2f5c: get limit data from diagnostic events
+- 9b93102: - build: release
+  - chore: updated the limits standard value
+- 7b9bd07: refactor: updated some of the limits config value.
+  - updated the validation content message.
+  - updated the package version link.
+
 ## 1.0.3
 
 ### Patch Changes
