@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.3
+
+### Patch Changes
+
+- chore: updated the limits standard value
+
 ## 1.0.2
 
 ### Patch Changes
