@@ -21,7 +21,7 @@ export default [
     rules: { 'no-undef': 'off' },
   },
   {
-    ignores: ['**/node_modules', '**/build', '**/scripts'],
+    ignores: ['**/node_modules', '**/build', '**/scripts', 'bun.build.js'],
   },
   ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
   {
