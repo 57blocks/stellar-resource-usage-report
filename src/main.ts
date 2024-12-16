@@ -4,10 +4,6 @@ import { anyObj } from '@/types';
 import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
 import { getStatsFromTx, getStatsFromTxRes } from '@/tasks';
 
-/**
- * Print a message to the terminal (use chalk to color the message)
- * @param message message to print
- */
 const calcResource = (
   simRes: rpc.Api.SimulateTransactionSuccessResponse,
   tx?: rpc.Api.GetSuccessfulTransactionResponse
@@ -27,8 +23,13 @@ const calcResource = (
   Object.entries(stats).forEach(([key, value]) => {
     const limit = standardConfig[key];
     const isExceeded = limit ? value > limit : false;
-    const isTaken70 = limit ? value > limit * 0.8 : false;
-    res.push([key, value, limit, isTaken70 ? '⚠️' : isExceeded ? '❌' : '✅']);
+    const isTaken80 = limit ? value > limit * 0.8 : false;
+    res.push([
+      key,
+      value,
+      limit,
+      isTaken80 ? `ℹ️ (used ${((value / limit) * 100).toFixed(2)} %)` : isExceeded ? '❌' : '✅',
+    ]);
   });
 
   printTable(res);

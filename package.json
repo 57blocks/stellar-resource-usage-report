@@ -14,7 +14,6 @@
     "prepare": "husky",
     "changelog": "changeset",
     "version": "changeset version --tag",
-    "version:tag": "changeset tag",
     "release": "changeset publish"
   },
   "devDependencies": {
