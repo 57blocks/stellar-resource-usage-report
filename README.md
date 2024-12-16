@@ -2,7 +2,7 @@
 
 > Note: **in the development stage, not yet available**
 
-[![NPM version](https://badge.fury.io/js/stellar-resource-usage.svg)](https://www.npmjs.com/package/stellar-resource-usage) 
+[![NPM version](https://img.shields.io/npm/v/stellar-resource-usage)](https://www.npmjs.com/package/stellar-resource-usage) 
 
 # Summary
 
