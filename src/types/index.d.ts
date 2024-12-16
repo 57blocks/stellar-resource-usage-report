@@ -8,5 +8,5 @@ export interface TXResourceUsageStats {
   entry_writes: number;
   read_bytes: number;
   write_bytes: number;
-  max_key_bytes: number;
+  max_key_bytes?: number;
 }
