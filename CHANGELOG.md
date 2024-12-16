@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.5
+
+### Patch Changes
+
+- 11f05ec: fix: fixed the issue with displaying message when exceeding limit
+
 ## 1.0.4
 
 ### Patch Changes
