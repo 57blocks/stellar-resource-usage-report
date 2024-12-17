@@ -1,10 +1,10 @@
 import { printTable } from '@/share';
-import { CalcResourceProps } from '@/types/interface';
+import { anyObj, CalcResourceProps } from '@/types/interface';
 import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
 import { getStats } from '@/tasks';
 
-const calcResource = (props: CalcResourceProps) => {
-  const stats = getStats(props);
+const calcResource = async (props: CalcResourceProps) => {
+  const stats = (await getStats(props)) as anyObj;
   const res: (string | number)[][] = [];
 
   Object.entries(stats).forEach(([key, value]) => {
