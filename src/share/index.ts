@@ -1,4 +1,5 @@
 import Table from 'tty-table';
+
 const style = require('tty-table/src/style');
 
 export const printTable = (rows: any[]) => {
