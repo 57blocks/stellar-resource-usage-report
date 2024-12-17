@@ -5,5 +5,5 @@ export const STELLAR_LIMITS_CONFIG = {
   entry_writes: 25,
   read_bytes: 200 * 1024,
   write_bytes: 129 * 1024,
-  max_entry_bytes: 128 * 1024,
+  entry_bytes: 128 * 1024,
 };

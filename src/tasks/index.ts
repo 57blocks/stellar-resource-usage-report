@@ -66,15 +66,12 @@ const handleTxToGetStats = async (
     : undefined;
   return {
     cpu_insns: metrics.cpu_insn,
-    entry_bytes: entrySize,
     mem_bytes: metrics.mem_byte,
-    // min_txn_bytes: tx.envelopeXdr.toXDR().length,
-    // max_entry_bytes: entries?.length ? Math.max(...entries) : 0,
+    entry_bytes: entrySize,
     entry_reads: footprint.readOnly().length,
     entry_writes: footprint.readWrite().length,
     read_bytes: resources.readBytes(),
     write_bytes: resources.writeBytes(),
-    // max_key_bytes: Math.max(...rwro),
   };
 };
 
@@ -110,7 +107,6 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
             throw 'Empty resultMetaXDR in getTransaction response';
           }
           const res = await handleTxToGetStats(simRes, getRes);
-          console.log('success===', res);
           return res;
         } else {
           console.log(await rpcServer._getTransaction(sendRes.hash));
