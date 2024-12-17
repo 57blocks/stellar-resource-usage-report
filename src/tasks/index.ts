@@ -1,29 +1,20 @@
 import { rpc, scValToNative } from '@stellar/stellar-sdk';
 
-import { TXResourceUsageStats } from '@/types';
+import { CalcResourceProps } from '@/types/interface';
 
-export const getStatsFromTxRes = (sim: rpc.Api.SimulateTransactionSuccessResponse): TXResourceUsageStats => {
-  const sorobanTransactionData = sim.transactionData;
-  const resources = sorobanTransactionData.build().resources();
+const handleTxToGetStats = async (
+  sim: rpc.Api.SimulateTransactionSuccessResponse,
+  tx: rpc.Api.GetSuccessfulTransactionResponse
+) => {
+  const { transactionData } = sim;
+  const resources = transactionData.build().resources();
   const footprint = resources.footprint();
 
-  const rwro = [
-    sorobanTransactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
-    sorobanTransactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
-  ].flat();
+  // const rwro = [
+  //   transactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
+  //   transactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
+  // ].flat();
 
-  return {
-    mem_bytes: resources.instructions(),
-    entry_reads: footprint.readOnly().length,
-    entry_writes: footprint.readWrite().length,
-    read_bytes: resources.readBytes(),
-    write_bytes: resources.writeBytes(),
-    max_key_bytes: Math.max(...rwro),
-  };
-};
-
-export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) => {
-  if (!tx || !tx.resultMetaXdr) return {};
   const metrics: Record<string, number | undefined> = {
     cpu_insn: undefined,
     mem_byte: undefined,
@@ -31,7 +22,7 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
     ledger_write_byte: undefined,
   };
 
-  tx?.resultMetaXdr
+  tx.resultMetaXdr
     .v3()
     .sorobanMeta()
     ?.diagnosticEvents()
@@ -52,7 +43,7 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
       }
     });
 
-  const entries = tx?.resultMetaXdr
+  const entries = tx.resultMetaXdr
     .v3()
     .operations()
     .flatMap((op) =>
@@ -74,8 +65,64 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
       }, 0)
     : undefined;
   return {
-    mem_bytes: metrics.mem_byte,
     cpu_insns: metrics.cpu_insn,
     entry_bytes: entrySize,
+    mem_bytes: metrics.mem_byte,
+    // min_txn_bytes: tx.envelopeXdr.toXDR().length,
+    // max_entry_bytes: entries?.length ? Math.max(...entries) : 0,
+    entry_reads: footprint.readOnly().length,
+    entry_writes: footprint.readWrite().length,
+    read_bytes: resources.readBytes(),
+    write_bytes: resources.writeBytes(),
+    // max_key_bytes: Math.max(...rwro),
   };
+};
+
+export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_000 }: CalcResourceProps) => {
+  const simRes = await rpcServer.simulateTransaction(tx);
+  const MAX_U32 = 2 ** 32 - 1;
+
+  if (rpc.Api.isSimulationSuccess(simRes)) {
+    simRes.minResourceFee = MAX_U32.toString();
+
+    const resources = simRes.transactionData.build().resources();
+    const assembleTx = rpc
+      .assembleTransaction(tx, simRes)
+      .setSorobanData(
+        simRes.transactionData
+          .setResourceFee(resourceFee)
+          .setResources(MAX_U32, resources.readBytes(), resources.writeBytes())
+          .build()
+      )
+      .build();
+
+    assembleTx.sign(keypair);
+
+    try {
+      const sendRes = await rpcServer.sendTransaction(assembleTx);
+
+      if (sendRes.status === 'PENDING') {
+        await Bun.sleep(5000);
+        const getRes = await rpcServer.getTransaction(sendRes.hash);
+
+        if (getRes.status === 'SUCCESS') {
+          if (!getRes.resultMetaXdr) {
+            throw 'Empty resultMetaXDR in getTransaction response';
+          }
+          const res = await handleTxToGetStats(simRes, getRes);
+          console.log('success===', res);
+          return res;
+        } else {
+          console.log(await rpcServer._getTransaction(sendRes.hash));
+        }
+      } else {
+        console.log(await rpcServer._sendTransaction(assembleTx));
+      }
+    } catch (error) {
+      console.log('Sending transaction failed');
+      console.log(JSON.stringify(error));
+    }
+  } else {
+    console.log(await rpcServer._simulateTransaction(tx));
+  }
 };

@@ -1,22 +1,10 @@
-import { rpc } from '@stellar/stellar-sdk';
-
 import { printTable } from '@/share';
-import { anyObj } from '@/types';
+import { CalcResourceProps } from '@/types/interface';
 import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
-import { getStatsFromTx, getStatsFromTxRes } from '@/tasks';
+import { getStats } from '@/tasks';
 
-const calcResource = (
-  simRes: rpc.Api.SimulateTransactionSuccessResponse,
-  tx?: rpc.Api.GetSuccessfulTransactionResponse
-) => {
-  const stats_txRes = getStatsFromTxRes(simRes);
-  const stats_tx = getStatsFromTx(tx);
-
-  const stats = {
-    ...stats_txRes,
-    ...stats_tx,
-  } as anyObj;
-
+const calcResource = (props: CalcResourceProps) => {
+  const stats = getStats(props);
   const res: (string | number)[][] = [];
 
   Object.entries(stats).forEach(([key, value]) => {
