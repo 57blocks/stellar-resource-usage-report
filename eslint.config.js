@@ -58,9 +58,7 @@ export default [
           varsIgnorePattern: '^_|^.$',
         },
       ],
-
-      '@typescript-eslint/no-var-requires': 'off',
-
+      '@typescript-eslint/no-require-imports': 'warn',
       'import/order': [
         'error',
         {
