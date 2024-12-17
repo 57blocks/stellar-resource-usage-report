@@ -10,3 +10,7 @@ export interface TXResourceUsageStats {
   write_bytes: number;
   max_key_bytes?: number;
 }
+
+declare module 'tty-table/src/style' {
+  export function style(str: string, bgRed: string, white: string): string;
+}
