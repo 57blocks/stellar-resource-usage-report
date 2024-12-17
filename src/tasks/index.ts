@@ -10,10 +10,10 @@ const handleTxToGetStats = async (
   const resources = transactionData.build().resources();
   const footprint = resources.footprint();
 
-  const rwro = [
-    transactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
-    transactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
-  ].flat();
+  // const rwro = [
+  //   transactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
+  //   transactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
+  // ].flat();
 
   const metrics: Record<string, number | undefined> = {
     cpu_insn: undefined,
@@ -59,16 +59,22 @@ const handleTxToGetStats = async (
       })
     );
 
+  const entrySize = entries?.length
+    ? entries.reduce((pre, next) => {
+        return pre + next;
+      }, 0)
+    : undefined;
   return {
     cpu_insns: metrics.cpu_insn,
+    entry_bytes: entrySize,
     mem_bytes: metrics.mem_byte,
-    min_txn_bytes: tx.envelopeXdr.toXDR().length,
-    max_entry_bytes: entries?.length ? Math.max(...entries) : 0,
+    // min_txn_bytes: tx.envelopeXdr.toXDR().length,
+    // max_entry_bytes: entries?.length ? Math.max(...entries) : 0,
     entry_reads: footprint.readOnly().length,
     entry_writes: footprint.readWrite().length,
     read_bytes: resources.readBytes(),
     write_bytes: resources.writeBytes(),
-    max_key_bytes: Math.max(...rwro),
+    // max_key_bytes: Math.max(...rwro),
   };
 };
 
