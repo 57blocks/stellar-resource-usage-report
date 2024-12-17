@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.8
+
+### Patch Changes
+
+- 94c4f8d: chore: arrange the order of fields
+
 ## 1.0.7
 
 ### Patch Changes
