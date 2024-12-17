@@ -68,10 +68,14 @@ export const getStatsFromTx = (tx?: rpc.Api.GetSuccessfulTransactionResponse) =>
       })
     );
 
+  const entrySize = entries?.length
+    ? entries.reduce((pre, next) => {
+        return pre + next;
+      }, 0)
+    : undefined;
   return {
     mem_bytes: metrics.mem_byte,
     cpu_insns: metrics.cpu_insn,
-    min_txn_bytes: tx ? tx.envelopeXdr.toXDR().length : undefined,
-    max_entry_bytes: tx ? (entries?.length ? Math.max(...entries) : 0) : undefined,
+    entry_bytes: entrySize,
   };
 };
