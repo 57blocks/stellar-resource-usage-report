@@ -1,5 +1,13 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.6
+
+### Patch Changes
+
+- 466a328: custom localhost port
+  update calcResource function
+- b1565f0: style: updated the style of the results table
+
 ## 1.0.5
 
 ### Patch Changes
