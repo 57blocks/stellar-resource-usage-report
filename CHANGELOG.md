@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.7
+
+### Patch Changes
+
+- 21f5066: feat: add ledger size field
+
 ## 1.0.6
 
 ### Patch Changes
