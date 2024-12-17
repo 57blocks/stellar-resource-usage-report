@@ -39,8 +39,10 @@ bun add stellar-resource-usage
 
 1. Make sure Docker Desktop is running on your system
 2. Start the unlimited network simulator:
+
+ Note: Using npx requires you to install npm globally in advance, more info please refer to [npx](https://docs.npmjs.com/cli/v10/commands/npx)
 ```
-npm run unlimited-net
+npx run dockerDev [--port=your port]
 ```
 3. Use the simulator in your code(make sure you have seen a steady stream of *stellar-core: Synced!* logs in step 2):
 

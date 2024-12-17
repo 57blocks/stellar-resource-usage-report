@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "ban run clean && bun ./bun.build.js",
+    "build": "bun run clean && bun ./bun.build.js",
     "start": "bun --watch test ./src/main.ts",
     "lint": "eslint . --fix",
     "test": "vitest -c ./vitest.config.ts --run",
@@ -17,7 +17,7 @@
     "release": "changeset publish"
   },
   "bin": {
-    "net": "./command.ts"
+    "dockerDev": "./command.cjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.10",
