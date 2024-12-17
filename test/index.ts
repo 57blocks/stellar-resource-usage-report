@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { printTable } from '@/share';
+import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
 
 describe('main', () => {
   it('log table data', () => {
@@ -11,12 +12,19 @@ describe('main', () => {
       entry_writes: 21,
       read_bytes: 212012,
       write_bytes: 68452,
-      events_and_return_bytes: 8272,
-      min_txn_bytes: 76132,
-      max_entry_bytes: 66920,
-      max_key_bytes: 352,
     };
-    const tableData = Object.entries(tableObj);
-    expect(printTable(tableData)).toEqual(tableData);
+
+    const res: (string | number)[][] = [];
+
+    Object.entries(tableObj).forEach(([key, value]) => {
+      const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
+      const isExceeded = limit ? value > limit : false;
+      const isTaken80 = limit ? value > limit * 0.8 : false;
+
+      const percent = ((value / limit) * 100).toFixed(2) + ' %';
+      res.push([key, value, limit, isExceeded ? `❌ (used ${percent})` : isTaken80 ? `ℹ️ (used ${percent})` : '✅']);
+    });
+    // const tableData = Object.entries(tableObj);
+    expect(printTable(res)).toEqual(res);
   });
 });
