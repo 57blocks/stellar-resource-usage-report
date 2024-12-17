@@ -6,18 +6,18 @@ export const printTable = (rows: any[]) => {
   const tableConfig: Table.Options = {
     borderStyle: 'solid',
     color: 'green',
-    borderColor: 'white',
+    borderColor: 'yellowBright',
     truncate: '...',
   };
 
   const headers: Table.Header[] = [
-    { value: 'Resource', width: 30, headerColor: 'blue', align: 'right' },
-    { value: 'Usage', width: 30, headerColor: 'blue' },
-    { value: 'Limit', width: 30, headerColor: 'blue' },
+    { value: 'Resource', width: 30, headerColor: 'cyanBright', align: 'right', alias: 'Resource' },
+    { value: 'Usage', width: 30, headerColor: 'cyanBright', alias: 'Usage (byte)' },
+    { value: 'Limit', width: 30, headerColor: 'cyanBright', alias: 'Limit (byte)' },
     {
       value: 'Result',
       width: 30,
-      headerColor: 'blue',
+      headerColor: 'cyanBright',
       formatter: (_cellValue, _columnIndex, rowIndex, rowData) => {
         const [_key, value, limit] = rowData[rowIndex];
         const percent = parseFloat(((value / limit) * 100).toFixed(2));
