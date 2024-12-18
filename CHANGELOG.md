@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.10
+
+### Patch Changes
+
+- c0e7f29: Updated the result table info
+
 ## 1.0.9
 
 ### Patch Changes
