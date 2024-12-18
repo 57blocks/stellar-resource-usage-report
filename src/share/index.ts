@@ -14,9 +14,9 @@ export const printTable = (rows: (string | number)[][]) => {
   };
 
   const headers: Table.Header[] = [
-    { value: 'Resource', width: 35, headerColor: 'cyanBright', align: 'right', alias: 'Resource' },
-    { value: 'Usage', width: 35, headerColor: 'cyanBright', alias: 'Usage (byte)' },
-    { value: 'Limit', width: 40, headerColor: 'cyanBright', alias: 'Limit (byte)' },
+    { value: 'Resource', width: 35, headerColor: 'cyanBright', align: 'right' },
+    { value: 'Usage', width: 35, headerColor: 'cyanBright' },
+    { value: 'Limit', width: 40, headerColor: 'cyanBright' },
     {
       value: 'Result',
       width: 30,

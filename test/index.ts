@@ -19,7 +19,7 @@ describe('main', () => {
     Object.entries(tableObj).forEach(([key, value]) => {
       const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
       const percent = parseFloat(((value / limit.value) * 100).toFixed(2));
-      res.push([key, value, `${limit.value} (${limit.unit})`, percent]);
+      res.push([key, value, limit.lable, percent]);
     });
     expect(printTable(res)).toEqual(res);
   });
