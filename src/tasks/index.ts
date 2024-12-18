@@ -1,3 +1,4 @@
+import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { rpc, scValToNative } from '@stellar/stellar-sdk';
 
 import { CalcResourceProps } from '@/types/interface';
@@ -5,7 +6,7 @@ import { CalcResourceProps } from '@/types/interface';
 const handleTxToGetStats = async (
   sim: rpc.Api.SimulateTransactionSuccessResponse,
   tx: rpc.Api.GetSuccessfulTransactionResponse
-) => {
+): Promise<Record<keyof typeof STELLAR_LIMITS_CONFIG, number | undefined>> => {
   const { transactionData } = sim;
   const resources = transactionData.build().resources();
   const footprint = resources.footprint();
@@ -59,11 +60,7 @@ const handleTxToGetStats = async (
       })
     );
 
-  const entrySize = entries?.length
-    ? entries.reduce((pre, next) => {
-        return pre + next;
-      }, 0)
-    : undefined;
+  const entrySize = Math.max(...entries) ?? 0;
   return {
     cpu_insns: metrics.cpu_insn,
     mem_bytes: metrics.mem_byte,
