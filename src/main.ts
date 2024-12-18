@@ -9,11 +9,8 @@ const calcResource = async (props: CalcResourceProps) => {
 
   Object.entries(stats).forEach(([key, value]) => {
     const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
-    const isExceeded = limit ? value > limit : false;
-    const isTaken80 = limit ? value > limit * 0.8 : false;
-
-    const percent = ((value / limit) * 100).toFixed(2) + ' %';
-    res.push([key, value, limit, isExceeded ? `❌ (used ${percent})` : isTaken80 ? `ℹ️ (used ${percent})` : '✅']);
+    const percent = parseFloat(((value / limit.value) * 100).toFixed(2));
+    res.push([key, value, `${limit.value} (${limit.unit})`, percent]);
   });
 
   printTable(res);
