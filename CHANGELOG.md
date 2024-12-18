@@ -1,5 +1,13 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.9
+
+### Patch Changes
+
+- dcf0cda: - Add units to result values
+  - Set alarm parameters to be configurable
+- 3c644d0: update readme & add deploy.example
+
 ## 1.0.8
 
 ### Patch Changes
