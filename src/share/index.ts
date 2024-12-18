@@ -24,7 +24,6 @@ export const printTable = (rows: (string | number)[][]) => {
       formatter: (_cellValue, _columnIndex, rowIndex, rowData) => {
         const [_key, _value, _limit, _percent] = rowData[rowIndex];
         const percent = parseFloat(_percent);
-        console.log('percent', rowData[rowIndex]);
         const isWarning = percent > STELLAR_LIMITS_CURSORS.WARNING * 100;
         const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
         const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
