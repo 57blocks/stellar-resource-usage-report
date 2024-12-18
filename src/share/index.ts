@@ -1,8 +1,11 @@
 import Table from 'tty-table';
 
+import { STELLAR_LIMITS_CURSORS } from '@/types/enums';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const style = require('tty-table/src/style');
 
-export const printTable = (rows: any[]) => {
+export const printTable = (rows: (string | number)[][]) => {
   const tableConfig: Table.Options = {
     borderStyle: 'solid',
     color: 'green',
@@ -11,22 +14,27 @@ export const printTable = (rows: any[]) => {
   };
 
   const headers: Table.Header[] = [
-    { value: 'Resource', width: 30, headerColor: 'cyanBright', align: 'right', alias: 'Resource' },
-    { value: 'Usage', width: 30, headerColor: 'cyanBright', alias: 'Usage (byte)' },
-    { value: 'Limit', width: 30, headerColor: 'cyanBright', alias: 'Limit (byte)' },
+    { value: 'Resource', width: 35, headerColor: 'cyanBright', align: 'right', alias: 'Resource' },
+    { value: 'Usage', width: 35, headerColor: 'cyanBright', alias: 'Usage (byte)' },
+    { value: 'Limit', width: 40, headerColor: 'cyanBright', alias: 'Limit (byte)' },
     {
       value: 'Result',
       width: 30,
       headerColor: 'cyanBright',
       formatter: (_cellValue, _columnIndex, rowIndex, rowData) => {
-        const [_key, value, limit] = rowData[rowIndex];
-        const percent = parseFloat(((value / limit) * 100).toFixed(2));
-        const isExceeded = percent > 100;
-        const isTaken80 = percent > 80;
-        if (isExceeded) {
-          return style.style(percent + '%', 'bgRed', 'white');
-        } else if (isTaken80) {
-          return style.style(percent + '%', 'bgYellow', 'white');
+        const [_key, _value, _limit, _percent] = rowData[rowIndex];
+        const percent = parseFloat(_percent);
+        console.log('percent', rowData[rowIndex]);
+        const isWarning = percent > STELLAR_LIMITS_CURSORS.WARNING * 100;
+        const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
+        const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
+
+        if (isError) {
+          return style.style(percent + '%', 'bgRed');
+        } else if (isDanger) {
+          return style.style(percent + '%', 'bgMagenta');
+        } else if (isWarning) {
+          return style.style(percent + '%', 'bgYellow');
         }
         return '✅';
       },

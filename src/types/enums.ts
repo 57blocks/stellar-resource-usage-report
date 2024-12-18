@@ -1,15 +1,5 @@
-export enum Network {
-  TESTNET = 'TESTNET',
-  MAINNET = 'MAINNET',
-}
-
-export enum Color {
-  RED = 'RED',
-  GREEN = 'GREEN',
-  YELLOW = 'YELLOW',
-  BLUE = 'BLUE',
-  MAGENTA = 'MAGENTA',
-  CYAN = 'CYAN',
-  WHITE = 'WHITE',
-  BLACK = 'BLACK',
+export enum STELLAR_LIMITS_CURSORS {
+  WARNING = 0.7,
+  DANGER = 0.8,
+  ERROR = 0.95,
 }
