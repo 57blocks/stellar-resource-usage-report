@@ -38,13 +38,14 @@ bun add stellar-resource-usage
 # Usage
 
 1. Make sure Docker Desktop is running on your system
-2. Start the unlimited network simulator:
+2. Start the unlimited network simulator. Executing the code below will launch a [stellar/quickstart](https://github.com/stellar/quickstart) image. You can also customize your own image according to the *quickstart* if you want.
 
- Note: Using npx requires you to install npm globally in advance, more info please refer to [npx](https://docs.npmjs.com/cli/v10/commands/npx)
+ _Note: Using npx requires you to install npm globally in advance, more info please refer to [npx](https://docs.npmjs.com/cli/v10/commands/npx)_
 ```
 npx dockerDev [--port=your port]
 ```
-3. Use the simulator in your code(make sure you have seen a steady stream of *stellar-core: Synced!* logs in step 2):
+3. Make sure you have seen a steady stream of *stellar-core: Synced!* logs in step 2. Deploy your contract once your local network is running. If you don’t know how to deploy a contract, you can check the [Stellar build doc](https://developers.stellar.org/docs/build/smart-contracts/getting-started) or the [deploy.example.ts](./deploy.example.ts) we provide for reference.
+4. Use the simulator in your code:
 
 ```ts
 import calcResource from "stellar-resource-usage";
@@ -58,7 +59,7 @@ import {
 } from '@stellar/stellar-sdk';
 
 // The port must be the same as dockerDev.
-const rpcUrl = 'http://localhost:8000/soroban/rpcServer';
+const rpcUrl = 'http://localhost:8000/rpc';
 const rpcServer = new rpc.Server(rpcUrl, { allowHttp: true });
 const keypair = Keypair.fromSecret('your secret key');
 const pubkey = keypair.publicKey();

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { printTable } from '@/share';
-import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
+import { STELLAR_LIMITS_CONFIG } from '@/constants';
 
 describe('main', () => {
   it('log table data', () => {

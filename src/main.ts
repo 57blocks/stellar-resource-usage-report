@@ -1,6 +1,6 @@
 import { printTable } from '@/share';
 import { anyObj, CalcResourceProps } from '@/types/interface';
-import { STELLAR_LIMITS_CONFIG } from '@/types/constants';
+import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { getStats } from '@/tasks';
 
 const calcResource = async (props: CalcResourceProps) => {

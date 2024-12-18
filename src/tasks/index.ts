@@ -72,6 +72,7 @@ const handleTxToGetStats = async (
     entry_writes: footprint.readWrite().length,
     read_bytes: resources.readBytes(),
     write_bytes: resources.writeBytes(),
+    min_txn_bytes: tx.envelopeXdr.toXDR().length,
   };
 };
 

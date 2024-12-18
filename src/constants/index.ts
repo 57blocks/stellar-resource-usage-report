@@ -27,4 +27,8 @@ export const STELLAR_LIMITS_CONFIG = {
     value: 128 * 1024,
     unit: 'bytes',
   },
+  min_txn_bytes: {
+    value: 129 * 1024,
+    unit: 'bytes',
+  },
 };
