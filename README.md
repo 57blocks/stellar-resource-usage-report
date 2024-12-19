@@ -14,7 +14,7 @@ Resource Usage Analytics for Stellar
 [Resource limits description](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/docs/RESOURCE_LIMITS_DESC.md)
 
 # Example Report
-![image](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/mockups/report.png)
+![image](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/public/report.png)
 
 # Installation
 
