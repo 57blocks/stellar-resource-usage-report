@@ -11,11 +11,6 @@ const handleTxToGetStats = async (
   const resources = transactionData.build().resources();
   const footprint = resources.footprint();
 
-  // const rwro = [
-  //   transactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
-  //   transactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
-  // ].flat();
-
   const metrics: Record<string, number | undefined> = {
     cpu_insn: undefined,
     mem_byte: undefined,
