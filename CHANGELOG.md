@@ -1,5 +1,12 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.11
+
+### Patch Changes
+
+- 077989d: feat: add legend for result table
+- 6ed8d1c: fix: update the value of `Ledger entry size (including Wasm entries) …
+
 ## 1.0.10
 
 ### Patch Changes
