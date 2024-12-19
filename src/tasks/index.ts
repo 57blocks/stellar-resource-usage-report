@@ -1,6 +1,6 @@
-import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { rpc, scValToNative } from '@stellar/stellar-sdk';
 
+import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { CalcResourceProps } from '@/types/interface';
 
 const handleTxToGetStats = async (
@@ -10,11 +10,6 @@ const handleTxToGetStats = async (
   const { transactionData } = sim;
   const resources = transactionData.build().resources();
   const footprint = resources.footprint();
-
-  // const rwro = [
-  //   transactionData.getReadWrite().flatMap((rw) => rw.toXDR().length),
-  //   transactionData.getReadOnly().flatMap((ro) => ro.toXDR().length),
-  // ].flat();
 
   const metrics: Record<string, number | undefined> = {
     cpu_insn: undefined,
