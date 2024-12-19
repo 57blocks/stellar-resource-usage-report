@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.13
+
+### Patch Changes
+
+- a1030b9: - save the report image to public directory
+
 ## 1.0.12
 
 ### Patch Changes

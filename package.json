@@ -1,6 +1,6 @@
 {
   "name": "stellar-resource-usage",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "main": "index.ts",
   "private": false,
   "type": "module",
