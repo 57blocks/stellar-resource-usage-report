@@ -1,6 +1,6 @@
-import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { rpc, scValToNative } from '@stellar/stellar-sdk';
 
+import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { CalcResourceProps } from '@/types/interface';
 
 const handleTxToGetStats = async (

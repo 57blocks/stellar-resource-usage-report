@@ -1,2 +1,0 @@
-[ -n "$GITHUB_ACTIONS" ] && exit 0
-bun run lint && bun run test
