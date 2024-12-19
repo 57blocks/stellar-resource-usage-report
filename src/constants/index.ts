@@ -21,7 +21,7 @@ export const STELLAR_LIMITS_CONFIG = {
   entry_writes: {
     value: 25,
     unit: 'count',
-    lable: '20',
+    lable: '25',
   },
   // Read bytes per txn
   read_bytes: {

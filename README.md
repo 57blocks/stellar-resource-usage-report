@@ -1,23 +1,22 @@
-# stellar-resource-usage (R&D stage)
+
 
 [![NPM version](https://img.shields.io/npm/v/stellar-resource-usage)](https://www.npmjs.com/package/stellar-resource-usage) 
 [![View changelog](https://img.shields.io/badge/Explore%20Changelog-brightgreen)](./CHANGELOG.md)
 
-# Summary
 
----
+# stellar-resource-usage
 
-As a resource utilization tool based on Node.js, it allows developers to generate resources using the resource utilization tool for reference when writing tests.
+<p align="center">
+Resource Usage Analytics for Stellar
+</p>
 
 # Resource Limits
-[Resource limits description](./docs/RESOURCE_LIMITS_DESC.md)
+[Resource limits description](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/docs/RESOURCE_LIMITS_DESC.md)
 
 # Example Report
 ![image](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/mockups/report.png)
 
 # Installation
-
----
 
 **npm**
 
@@ -35,6 +34,31 @@ pnpm add stellar-resource-usage
 
 ```sh
 bun add stellar-resource-usage
+```
+
+Add the following to your contract:
+
+```ts
+import calcResource from "stellar-resource-usage"
+```
+
+Configuration:
+
+```ts
+interface CalcResourceProps {
+  tx: Transaction;
+  rpcServer: rpc.Server;
+  keypair: Keypair;
+  resourceFee?: number;
+}
+
+const params: CalcResourceProps = {
+  tx: tx,
+  rpcServer: rpc,
+  keypair: keypair,
+}
+
+calcResource(params)
 ```
 
 # Usage
@@ -55,6 +79,7 @@ npx dockerDev [--port=your port]
 
 ```ts
 + import calcResource from "stellar-resource-usage";
+
 import {
   Account,
   Keypair,
