@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.0.12
+
+### Patch Changes
+
+- f4d6807: - updated the readme.md file
+
 ## 1.0.11
 
 ### Patch Changes
