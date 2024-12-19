@@ -1,14 +1,20 @@
 ## Max CPU instructions per txn
+This refers to the maximum number of CPU instructions allowed when executing smart contract transactions.
+It limits the amount of computation that a contract can perform.
 
 ```ts
-eventBody.data()  which event topics equal to [ "core_metrics", "cpu_insn" ] 
+const eventBody = diagnosticEvent.event().body().v0();
+eventBody.data()  which eventBody topics equal to [ "core_metrics", "cpu_insn" ] 
 ```
 
 
 ## Memory limit per txn
 
+This refers to the maximum amount of memory allowed to be used when executing smart contract transactions.
+It limits the memory space that a contract can use.
+
 ```ts
-eventBody.data()  which event topics equal to [ "core_metrics", "mem_byte" ]
+eventBody.data()  which eventBody topics equal to [ "core_metrics", "mem_byte" ]
 ```
 
 ## Ledger entry size (including Wasm entries) per txn
@@ -73,7 +79,7 @@ transactionData.build().resource().readBytes()
 
 
 
-### Write bytes per txn
+## Write bytes per txn
 
 Write bytes per txn"" refers to the amount of data, measured in bytes, that a transaction writes to the ledger during its execution. 
 
@@ -84,3 +90,14 @@ After executing a transaction, the result typically includes metadata that outli
 ```ts
 transactionData.build().resource().writeBytes()
 ```
+
+## Transaction size
+
+This refers to the maximum amount of data that can be included in a single transaction.
+It limits the complexity of operations that can be included in a transaction.
+
+```
+tx.envelopeXdr.toXDR().length
+```
+
+
