@@ -1,4 +1,5 @@
 import { rpc, scValToNative } from '@stellar/stellar-sdk';
+import { AssembledTransaction } from '@stellar/stellar-sdk/contract';
 
 import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { CalcResourceProps } from '@/types/interface';
@@ -114,4 +115,63 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
   } else {
     console.log(await rpcServer._simulateTransaction(tx));
   }
+};
+
+export const handleTxToGetStatsV2 = async (
+  assemTx: AssembledTransaction<null>,
+  tx: rpc.Api.GetSuccessfulTransactionResponse
+): Promise<Record<string, number | undefined>> => {
+  const resources = assemTx.simulationData.transactionData.resources();
+  const footprint = resources.footprint();
+
+  const metrics: Record<string, number | undefined> = {
+    cpu_insn: undefined,
+    mem_byte: undefined,
+    ledger_read_byte: undefined,
+    ledger_write_byte: undefined,
+  };
+
+  tx.resultMetaXdr
+    .v3()
+    .sorobanMeta()
+    ?.diagnosticEvents()
+    .forEach((e) => {
+      const eventBody = e.event().body().v0();
+      const topics = eventBody.topics().map(scValToNative);
+
+      if (!topics.includes('core_metrics')) return;
+
+      const matchedMetric = Object.keys(metrics).find((metric) => topics.includes(metric));
+      if (matchedMetric) {
+        metrics[matchedMetric] = Number(scValToNative(eventBody.data()));
+      }
+    });
+
+  const entries = tx.resultMetaXdr
+    .v3()
+    .operations()
+    .flatMap((op) =>
+      op.changes().flatMap((change) => {
+        switch (change.switch().name) {
+          case 'ledgerEntryCreated':
+            return change.created().data().value().toXDR().length;
+          case 'ledgerEntryUpdated':
+            return change.updated().data().value().toXDR().length;
+          default:
+            return 0;
+        }
+      })
+    );
+
+  const entrySize = Math.max(...entries) ?? 0;
+  return {
+    cpu_insns: metrics.cpu_insn,
+    mem_bytes: metrics.mem_byte,
+    entry_bytes: entrySize,
+    entry_reads: footprint.readOnly().length,
+    entry_writes: footprint.readWrite().length,
+    read_bytes: resources.readBytes(),
+    write_bytes: resources.writeBytes(),
+    min_txn_bytes: tx.envelopeXdr.toXDR().length,
+  };
 };
