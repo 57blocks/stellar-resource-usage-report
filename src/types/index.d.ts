@@ -68,5 +68,5 @@ declare module 'stellar-resource-usage' {
 
   export function getStats(props: CalcResourceProps): Promise<anyObj>;
 
-  export default function calcResource(props: CalcResourceProps): Promise<boolean>;
+  export function calcResource(props: CalcResourceProps): Promise<boolean>;
 }

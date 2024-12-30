@@ -16,6 +16,7 @@ const compat = new FlatCompat({
 });
 
 export default [
+  { ignores: ['node_modules/*', 'dist/*'] },
   {
     files: ['**/*.ts', '**/*.js'],
     rules: { 'no-undef': 'off' },
