@@ -56,3 +56,14 @@ export const STELLAR_LIMITS_CONFIG = {
 export const UPDATE_STELLAR_LIMITS_CONFIG = (limits: Record<string, { [key: string]: any }>) => {
   return { ...STELLAR_LIMITS_CONFIG, ...limits };
 };
+
+export const MetricKeys = [
+  'cpu_insns',
+  'mem_bytes',
+  'entry_bytes',
+  'entry_reads',
+  'entry_writes',
+  'read_bytes',
+  'write_bytes',
+  'min_txn_bytes',
+];
