@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.1
+
+### Patch Changes
+
+- 798c176: - Updated the printTable function to support the avg
+
 ## 1.1.0
 
 ### Minor Changes
