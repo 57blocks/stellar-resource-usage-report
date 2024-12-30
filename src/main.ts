@@ -39,7 +39,7 @@ export function ResourceUsageClient(Client: any, options: ClientOptions) {
             Object.entries(stats).forEach(([key, value]) => {
               const limit = STELLAR_LIMITS_CONFIG[key as 'cpu_insns'];
               const percent = parseFloat(((value / limit.value) * 100).toFixed(2));
-              lis.push([key, value, limit.lable, percent]);
+              lis.push([key, value, limit.label, percent]);
             });
 
             printTable(lis);
