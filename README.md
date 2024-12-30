@@ -39,7 +39,7 @@ bun add stellar-resource-usage
 Add the following to your contract:
 
 ```ts
-import calcResource from "stellar-resource-usage"
+import { calcResource } from "stellar-resource-usage"
 ```
 
 Configuration:
@@ -86,7 +86,7 @@ npx dockerDev [--port=your port]
 4. Use the simulator in your code:
 
 ```ts
-+ import calcResource from "stellar-resource-usage";
++ import { calcResource } from "stellar-resource-usage";
 
 import {
   Account,

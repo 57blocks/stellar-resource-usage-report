@@ -4,6 +4,7 @@ import { printTable } from '@/share';
 import { anyObj, CalcResourceProps } from '@/types/interface';
 import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { getStats, handleTxToGetStatsV2 } from '@/tasks';
+import { updateTxLimits } from './utils/utils';
 
 export interface ResourceUsageClient {
   contractId: string;
@@ -13,7 +14,8 @@ export interface ResourceUsageClient {
   printTable(): void;
 }
 
-const calcResource = async (props: CalcResourceProps) => {
+export const calcResource = async (props: CalcResourceProps) => {
+  await updateTxLimits();
   const stats = (await getStats(props)) as anyObj;
   const res: (string | number)[][] = [];
 
@@ -29,7 +31,8 @@ const calcResource = async (props: CalcResourceProps) => {
   return true;
 };
 
-export function ResourceUsageClient<T>(Client: any, options: ClientOptions) {
+export async function ResourceUsageClient<T>(Client: any, options: ClientOptions) {
+  await updateTxLimits();
   class ResourceUsage extends Client {
     contractId: string;
     storedStatus: {
@@ -77,5 +80,3 @@ export function ResourceUsageClient<T>(Client: any, options: ClientOptions) {
   }
   return new ResourceUsage() as unknown as T & ResourceUsageClient;
 }
-
-export default calcResource;
