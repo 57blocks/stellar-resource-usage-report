@@ -52,3 +52,14 @@ export const STELLAR_LIMITS_CONFIG = {
     label: '129 KB',
   },
 };
+
+export const MetricKeys = [
+  'cpu_insns',
+  'mem_bytes',
+  'entry_bytes',
+  'entry_reads',
+  'entry_writes',
+  'read_bytes',
+  'write_bytes',
+  'min_txn_bytes',
+];
