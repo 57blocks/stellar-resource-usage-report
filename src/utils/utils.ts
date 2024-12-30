@@ -1,6 +1,6 @@
 import { transform, isObject, isArray } from 'lodash-es';
 
-import { STELLAR_LIMITS_CONFIG } from '../constants';
+import { STELLAR_LIMITS_CONFIG, UPDATE_STELLAR_LIMITS_CONFIG } from '../constants';
 import { getProtocolHistory } from '@/api/stellar';
 
 // This time corresponds to the value in the STELLAR_LIMITS_CONFIG
@@ -12,11 +12,9 @@ export const updateTxLimits = async () => {
 
   try {
     const data = await getProtocolHistory();
-    const flattenData = data
-      .map((history: any) => {
-        return flattenObjectWithFilter(history.config_changes, ['contractCompute', 'contractLedgerCost']);
-      })
-      .filter((item: any) => Object.keys(item).length > 0);
+    const flattenData = data.map((history: any) => {
+      return filterObject(history.config_changes, ['contractCompute', 'contractLedgerCost', 'contractBandwidth']);
+    });
     const contractLimitData = flattenData.reverse().reduce((final: Record<string, any>, item: Record<string, any>) => {
       return { ...final, ...item };
     }, {});
@@ -47,13 +45,28 @@ export const updateTxLimits = async () => {
         ...STELLAR_LIMITS_CONFIG.write_bytes,
         value: contractLimitData.contractLedgerCost.txMaxWriteBytes ?? STELLAR_LIMITS_CONFIG.write_bytes.value,
       },
+      min_txn_bytes: {
+        ...STELLAR_LIMITS_CONFIG.min_txn_bytes,
+        value: contractLimitData.contractBandwidth.txMaxSizeBytes ?? STELLAR_LIMITS_CONFIG.min_txn_bytes.value,
+      },
     };
-    // @ts-ignore
-    STELLAR_LIMITS_CONFIG = txLimits;
+    UPDATE_STELLAR_LIMITS_CONFIG(txLimits);
   } catch (error) {
     console.log(error);
   }
 };
+
+export function filterObject(obj: object, keys: string[]) {
+  if (Object.prototype.toString.call(obj) === '[object Object]') {
+    const filteredObj: Record<string, any> = {};
+    Object.entries(obj).forEach(([key, value]) => {
+      if (keys.includes(key)) {
+        filteredObj[key] = value;
+      }
+    });
+    return filteredObj;
+  }
+}
 
 export const flattenObjectWithFilter = (obj: object, allowedPaths: string[], prefix = '') => {
   return transform(
