@@ -45,13 +45,6 @@ import calcResource from "stellar-resource-usage"
 Configuration:
 
 ```ts
-interface CalcResourceProps {
-  tx: Transaction;
-  rpcServer: rpc.Server;
-  keypair: Keypair;
-  resourceFee?: number;
-}
-
 const params: CalcResourceProps = {
   tx: tx,
   rpcServer: rpc,
@@ -59,6 +52,21 @@ const params: CalcResourceProps = {
 }
 
 calcResource(params)
+```
+
+If use `Client`:
+
+```ts
+import { Client, networks, scValToNative } from "path/to/client";
+import { ResourceUsageClient } from 'stellar-resource-usage';
+const _contract = ResourceUsageClient(Client, {
+      contractId: networks.standalone.contractId,
+      networkPassphrase: networks.standalone.networkPassphrase,
+      rpcUrl: "http://localhost:8000/soroban/rpc",
+      publicKey: pubkey, // process.env.SOROBAN_PUBLIC_KEY,
+      allowHttp: true,
+      signTransaction,
+    });
 ```
 
 # Usage

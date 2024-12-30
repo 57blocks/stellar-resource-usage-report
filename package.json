@@ -4,6 +4,7 @@
   "main": "index.ts",
   "private": false,
   "type": "module",
+  "types": "src/types/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "bun run clean && bun ./bun.build.js",
