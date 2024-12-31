@@ -2,7 +2,7 @@ import Table from 'tty-table';
 import { ContractStore, MetricStatistics, ResourceMetricKeys, ResultStatistics } from 'stellar-resource-usage';
 
 import { STELLAR_LIMITS_CURSORS } from '@/types/enums';
-import { MetricKeys } from '@/constants';
+import { MetricKeys, STELLAR_LIMITS_CONFIG } from '@/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const style = require('tty-table/src/style');
@@ -185,28 +185,12 @@ export const printTableV2 = (store: ContractStore) => {
       width: 25,
       headerColor: 'cyanBright',
       align: 'right',
-      // formatter: (cellValue, column, rowIndex, rowData) => {
-      //   const [_func, _key, avg] = rowData[rowIndex];
-      //   const percent = parseFloat(avg) / ;
-
-      //   const isWarning = percent > STELLAR_LIMITS_CURSORS.WARNING * 100;
-      //   const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
-      //   const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
-
-      //   if (isError) {
-      //     return style.style(percent + '%', 'bgRed');
-      //   } else if (isDanger) {
-      //     return style.style(percent + '%', 'bgMagenta');
-      //   } else if (isWarning) {
-      //     return style.style(percent + '%', 'bgYellow');
-      //   }
-      // },
     },
     { value: 'Function', width: 25, headerColor: 'cyanBright' },
     { value: 'Resource', width: 25, headerColor: 'cyanBright' },
-    { value: 'Avg', width: 25, headerColor: 'cyanBright' },
-    { value: 'Max', width: 25, headerColor: 'cyanBright' },
-    { value: 'Min', width: 25, headerColor: 'cyanBright' },
+    { value: 'Avg', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
+    { value: 'Max', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
+    { value: 'Min', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
     { value: 'Total', width: 25, headerColor: 'cyanBright' },
     { value: 'Times', width: 25, headerColor: 'cyanBright' },
   ];
@@ -214,4 +198,25 @@ export const printTableV2 = (store: ContractStore) => {
   const t3 = Table(headers, rows, tableConfig);
   console.log(t3.render());
   return rows;
+};
+
+const formatTableCell: Table.Formatter = (cellValue, _, rowIndex, rowData) => {
+  // get the resource name
+  const resourceName = rowData[rowIndex][2] as keyof typeof STELLAR_LIMITS_CONFIG;
+  // get the limit value
+  const limit = STELLAR_LIMITS_CONFIG[resourceName].value;
+  // calculate the percentage
+  const percent = parseFloat(((cellValue / limit) * 100).toFixed(2));
+  // set the color based on the percentage
+  const isWarning = percent > STELLAR_LIMITS_CURSORS.WARNING * 100;
+  const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
+  const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
+
+  if (isError) {
+    return style.style(percent + '%', 'bgRed');
+  } else if (isDanger) {
+    return style.style(percent + '%', 'bgMagenta');
+  } else if (isWarning) {
+    return style.style(percent + '%', 'bgYellow');
+  }
 };
