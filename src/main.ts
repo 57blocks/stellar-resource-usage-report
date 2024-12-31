@@ -1,19 +1,11 @@
 import { type ClientOptions } from '@stellar/stellar-sdk/contract';
-import { ContractStore } from 'stellar-resource-usage';
+import { ContractStore, ResourceUsageClientInstance } from 'stellar-resource-usage';
 
 import { printTable, printTableV2 } from '@/share';
 import { anyObj, CalcResourceProps } from '@/types/interface';
 import { STELLAR_LIMITS_CONFIG } from '@/constants';
 import { getStats, handleTxToGetStatsV2 } from '@/tasks';
 import { updateTxLimits } from './utils/utils';
-
-export interface ResourceUsageClient {
-  contractId: string;
-  storedStatus: {
-    [functionName: string]: any[];
-  };
-  printTable(): void;
-}
 
 export const calcResource = async (props: CalcResourceProps) => {
   await updateTxLimits();
@@ -31,6 +23,7 @@ export const calcResource = async (props: CalcResourceProps) => {
   // For testing purposes
   return true;
 };
+const CONSTRUCTOR_FUNC = '__constructor';
 
 export async function ResourceUsageClient<T>(Client: any, options: ClientOptions) {
   await updateTxLimits();
@@ -42,9 +35,13 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
         throw new Error('contractId is required');
       }
       super(options);
+      this.contractId = options.contractId;
       const contractFunNames = this.spec.funcs().map((fun: any) => fun.name().toString());
       for (const funName of contractFunNames) {
         const originalFun = this[funName];
+        if (originalFun === CONSTRUCTOR_FUNC) {
+          return;
+        }
         this[funName] = async (...args: any) => {
           try {
             const assembledTx = await originalFun(...args);
@@ -73,5 +70,5 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
       printTableV2(storeData);
     }
   }
-  return new ResourceUsage() as unknown as T & ResourceUsageClient;
+  return new ResourceUsage() as unknown as T & ResourceUsageClientInstance;
 }
