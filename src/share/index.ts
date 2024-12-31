@@ -75,7 +75,8 @@ const loadTableData = (statistics: ResultStatistics) => {
         }
 
         const { avg, max, min, sum } = data[key] as MetricStatistics;
-        res.push([contractName, funcName, key, avg, max, min, sum, times]);
+        const limitation = STELLAR_LIMITS_CONFIG[key as keyof typeof STELLAR_LIMITS_CONFIG].value;
+        res.push([contractName, funcName, key, limitation, avg, max, min, sum, times]);
       });
     });
   });
@@ -185,9 +186,13 @@ export const printTableV2 = (store: ContractStore) => {
       width: 25,
       headerColor: 'cyanBright',
       align: 'right',
+      formatter: (_cellValue) => {
+        return `${_cellValue.slice(0, 6)}...${_cellValue.slice(-4)}`;
+      },
     },
     { value: 'Function', width: 25, headerColor: 'cyanBright' },
     { value: 'Resource', width: 25, headerColor: 'cyanBright' },
+    { value: 'Limitation', width: 25, headerColor: 'cyanBright' },
     { value: 'Avg', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
     { value: 'Max', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
     { value: 'Min', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
@@ -219,4 +224,5 @@ const formatTableCell: Table.Formatter = (cellValue, _, rowIndex, rowData) => {
   } else if (isWarning) {
     return style.style(percent + '%', 'bgYellow');
   }
+  return percent + '%';
 };
