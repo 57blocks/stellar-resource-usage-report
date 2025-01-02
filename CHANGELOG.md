@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.2
+
+### Patch Changes
+
+- 75af27e: - Bug fixed and some miner change
+
 ## 1.1.1
 
 ### Patch Changes
