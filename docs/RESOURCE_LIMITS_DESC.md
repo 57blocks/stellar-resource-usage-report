@@ -40,5 +40,3 @@ After executing a transaction, the result typically includes metadata that outli
 This refers to the maximum amount of data that can be included in a single transaction.
 It limits the complexity of operations that can be included in a transaction.
 
-
-
