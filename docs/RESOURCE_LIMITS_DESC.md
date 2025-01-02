@@ -2,47 +2,13 @@
 This refers to the maximum number of CPU instructions allowed when executing smart contract transactions.
 It limits the amount of computation that a contract can perform.
 
-```ts
-const eventBody = diagnosticEvent.event().body().v0();
-eventBody.data()  which eventBody topics equal to [ "core_metrics", "cpu_insn" ] 
-```
-
-
 ## Memory limit per txn
 
 This refers to the maximum amount of memory allowed to be used when executing smart contract transactions.
 It limits the memory space that a contract can use.
 
-```ts
-eventBody.data()  which eventBody topics equal to [ "core_metrics", "mem_byte" ]
-```
-
 ## Ledger entry size (including Wasm entries) per txn
 A limit on the `maximum` entry size （includes the ledger key）
-
-```ts
-// The  sum of ledgerEntryCreated and ledgerEntryUpdated event data
-
-  const entries = tx.resultMetaXdr
-    .v3()
-    .operations()
-    .flatMap((op) =>
-      op.changes().flatMap((change) => {
-        switch (change.switch().name) {
-          case 'ledgerEntryCreated':
-            return change.created().data().value().toXDR().length;
-          case 'ledgerEntryUpdated':
-            return change.updated().data().value().toXDR().length;
-          default:
-            return 0;
-        }
-      })
-    );
-
-  const entrySize = Math.max(...entries) ?? 0;
-```
-
-
 
 ## Read ledger entries per txn
 
@@ -50,33 +16,15 @@ Read ledger entries per txn"" refers to the number of ledger entries that a tran
 
 This metric is particularly relevant when dealing with operations that require access to existing ledger entries, such as account information, balances, or, in the case of Soroban smart contracts, entries related to contract state.
 
-```ts
-transactionData.build().footprint().readOnly().length
-```
-
-
-
 ## Write ledger entries per txn
 
 "Write ledger entries per txn" refers to the number of ledger entries that are modified or created during the execution of a transaction. 
-
-```ts
-transactionData.build().footprint().readWrite().length
-```
-
-
 
 ## Read bytes per txn
 
 Read bytes per txn"" refers to the volume of data, measured in bytes, that a transaction reads from the ledger during its execution. 
 
 This metric is important for understanding the data throughput and resource consumption associated with executing transactions, especially when working with complex smart contracts.
-
-```ts
-transactionData.build().resource().readBytes()
-
-```
-
 
 
 ## Write bytes per txn
@@ -87,17 +35,10 @@ This metric is particularly relevant for understanding how much new data or modi
 
 After executing a transaction, the result typically includes metadata that outlines the changes made to the ledger. This information can be analyzed to determine how much data was written.
 
-```ts
-transactionData.build().resource().writeBytes()
-```
-
 ## Transaction size
 
 This refers to the maximum amount of data that can be included in a single transaction.
 It limits the complexity of operations that can be included in a transaction.
 
-```
-tx.envelopeXdr.toXDR().length
-```
 
 
