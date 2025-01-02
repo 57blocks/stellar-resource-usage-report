@@ -25,17 +25,19 @@ To install and run Stellar Resource Usage locally, follow these steps:
 
 1. Install dependencies:
 
+npm:
+
 ```sh
 npm i stellar-resource-usage
 ```
 
-**pnpm**
+pnpm
 
 ```sh
 pnpm add stellar-resource-usage
 ```
 
-**bun**
+bun
 
 ```sh
 bun add stellar-resource-usage
@@ -55,9 +57,11 @@ npx dockerDev [--port=your port] # The default port is 8000
 
 3. Make sure you have seen a steady stream of *stellar-core: Synced!* logs in `step 2`. Deploy your contract once your local network is running. If you don’t know how to deploy a contract, you can check the [Stellar build doc](https://developers.stellar.org/docs/build/smart-contracts/getting-started) or the [deploy.example.ts](./deploy.example.ts) we provide for reference.
 
-### Scenario 1
+4. Using `stellar-resource-usage` in your code
 
-1. When you generate a typescript module using the `stellar contract bindings` command, and use the `Client` in this module to call and execute the contract functions:
+**Scenario 1**
+
+When you generate a typescript module using the `stellar contract bindings` command, and use the `Client` in this module to call and execute the contract functions:
 
 ```js
 import { Keypair } from "@stellar/stellar-sdk";
@@ -100,7 +104,7 @@ callContract();
 
 ```
 
-2. Add the `stellar-resource-usage` library:
+Add the `stellar-resource-usage` library:
 
 ```js
 import { Keypair } from "@stellar/stellar-sdk";
@@ -147,10 +151,10 @@ const callContract = async () => {
 callContract();
 ```
 
-### Scenario 2
+**Scenario 2**
 ...
 
-3. Execute the file
+5. Execute the file
 
 For typescript files, we recommend using `bun` to run directly, which makes the command very simple, just execute `bun run filepath`. then you will see the reporter in the console.
 
@@ -159,6 +163,5 @@ If you need assistance or have any questions, you can submit issues on GitHub Is
 
 # License
 This project is open-source under the MIT License.
-
 
 Enhance your smart contract efficiency and speed with Stellar Resource Usage! Thank you for using this tool, and we look forward to your feedback and contributions.
