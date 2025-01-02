@@ -1,5 +1,13 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.3
+
+### Patch Changes
+
+- 34d291b: - Updated README file
+  - Updated the result table layout and style.
+  - Fixed some bugs.
+
 ## 1.1.2
 
 ### Patch Changes
