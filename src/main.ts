@@ -67,7 +67,7 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
     }
     printTable() {
       const storeData = this.storedStatus;
-      printTableV2(storeData);
+      printTableV2(this.contractId, storeData);
     }
   }
   return new ResourceUsage() as unknown as T & ResourceUsageClientInstance;

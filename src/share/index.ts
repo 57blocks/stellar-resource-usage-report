@@ -1,4 +1,6 @@
 import Table from 'tty-table';
+import CliTable3 from 'cli-table3';
+import Colors from '@colors/colors';
 import { ContractStore, MetricStatistics, ResourceMetricKeys, ResultStatistics } from 'stellar-resource-usage';
 
 import { STELLAR_LIMITS_CURSORS } from '@/types/enums';
@@ -63,27 +65,6 @@ const calcStatistics = (store: ContractStore) => {
   return res;
 };
 
-const loadTableData = (statistics: ResultStatistics) => {
-  const res: (string | number)[][] = [];
-
-  Object.entries(statistics).forEach(([contractName, funcs]) => {
-    Object.entries(funcs).forEach(([funcName, data]) => {
-      const times = data.times;
-      MetricKeys.forEach((key) => {
-        if (!data[key]) {
-          return;
-        }
-
-        const { avg, max, min, sum } = data[key] as MetricStatistics;
-        const limitation = STELLAR_LIMITS_CONFIG[key as keyof typeof STELLAR_LIMITS_CONFIG].value;
-        res.push([contractName, funcName, key, limitation, avg, max, min, sum, times]);
-      });
-    });
-  });
-
-  return res;
-};
-
 const printTableInfo = () => {
   const tableConfig: Table.Options = {
     borderStyle: 'dashed',
@@ -110,16 +91,11 @@ const printTableInfo = () => {
 
   const rows = [
     [
-      style.style(`Success ✅ : [0, ${STELLAR_LIMITS_CURSORS.WARNING * 100}%]`, 'bgGreen'),
       style.style(
-        `Warning: (${STELLAR_LIMITS_CURSORS.WARNING * 100}%, ${STELLAR_LIMITS_CURSORS.DANGER * 100}%]`,
+        `Warning: (${STELLAR_LIMITS_CURSORS.DANGER * 100}%, ${STELLAR_LIMITS_CURSORS.ERROR * 100}%]`,
         'bgYellow'
       ),
-      style.style(
-        `Danger: (${STELLAR_LIMITS_CURSORS.DANGER * 100}%, ${STELLAR_LIMITS_CURSORS.ERROR * 100}%]`,
-        'bgMagenta'
-      ),
-      style.style(`Error: (${STELLAR_LIMITS_CURSORS.ERROR * 100}%, ]`, 'bgRed'),
+      style.style(`Error: Over ${STELLAR_LIMITS_CURSORS.ERROR * 100}%`, 'bgRed'),
     ],
   ];
 
@@ -167,62 +143,100 @@ export const printTable = (rows: (string | number)[][]) => {
   return rows;
 };
 
-export const printTableV2 = (store: ContractStore) => {
-  printTableInfo();
+export const loadTableDataV2 = (statistics: ResultStatistics) => {
+  const res: {
+    func: string;
+    times: number;
+    data: (string | number)[][];
+  }[] = [];
+  Object.entries(statistics).forEach(([_, funcs]) => {
+    Object.entries(funcs).forEach(([func, data]) => {
+      const times = data.times;
+      const trData: (string | number)[][] = [];
+      MetricKeys.forEach((key) => {
+        if (!data[key]) {
+          return;
+        }
+        const { avg, max, min, sum } = data[key] as MetricStatistics;
+        const limitation = STELLAR_LIMITS_CONFIG[key as keyof typeof STELLAR_LIMITS_CONFIG].value;
+        trData.push([key, limitation, avg, max, min, sum]);
+      });
+      res.push({
+        func,
+        times,
+        data: trData,
+      });
+    });
+  });
 
-  const statistics = calcStatistics(store);
-  const rows = loadTableData(statistics);
-
-  const tableConfig: Table.Options = {
-    borderStyle: 'solid',
-    color: 'green',
-    borderColor: 'yellowBright',
-    truncate: '...',
-  };
-
-  const headers: Table.Header[] = [
-    {
-      value: 'Contract',
-      width: 25,
-      headerColor: 'cyanBright',
-      align: 'right',
-      formatter: (_cellValue) => {
-        return `${_cellValue.slice(0, 6)}...${_cellValue.slice(-4)}`;
-      },
-    },
-    { value: 'Function', width: 25, headerColor: 'cyanBright' },
-    { value: 'Resource', width: 25, headerColor: 'cyanBright' },
-    { value: 'Limitation', width: 25, headerColor: 'cyanBright' },
-    { value: 'Avg', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
-    { value: 'Max', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
-    { value: 'Min', width: 25, headerColor: 'cyanBright', formatter: formatTableCell },
-    { value: 'Total', width: 25, headerColor: 'cyanBright' },
-    { value: 'Times', width: 25, headerColor: 'cyanBright' },
-  ];
-
-  const t3 = Table(headers, rows, tableConfig);
-  console.log(t3.render());
-  return rows;
+  return res;
 };
 
-const formatTableCell: Table.Formatter = (cellValue, _, rowIndex, rowData) => {
-  // get the resource name
-  const resourceName = rowData[rowIndex][2] as keyof typeof STELLAR_LIMITS_CONFIG;
-  // get the limit value
-  const limit = STELLAR_LIMITS_CONFIG[resourceName].value;
+export const printTableV2 = (contractId: string, store: ContractStore) => {
+  // printTableInfo();
+  const cliTable = new CliTable3({
+    style: { head: [], border: [] },
+  });
+  cliTable.push([
+    {
+      colSpan: 6,
+      content: Colors.brightCyan.bold('Resource Usage Table'),
+      hAlign: 'center',
+    },
+  ]);
+  const labelTr = [
+    { content: Colors.brightCyan.bold('Highligh Color'), colSpan: 2 },
+    { content: Colors.brightYellow.bold('Warning: 80% - 95%'), colSpan: 2 },
+    { content: Colors.brightRed.bold('Error: Over 95%'), colSpan: 2 },
+  ];
+  const contractTr = [
+    { content: Colors.brightCyan.bold('Contract'), colSpan: 2 },
+    { content: contractId, colSpan: 4 },
+  ];
+  cliTable.push(labelTr);
+  cliTable.push(contractTr);
+  const statistics = calcStatistics(store);
+  const res = loadTableDataV2(statistics);
+  res.forEach(({ func, times, data }) => {
+    const funcTr = [
+      Colors.brightCyan.bold('Function'),
+      {
+        content: func,
+        colSpan: 2,
+      },
+      Colors.brightCyan.bold('Times'),
+      {
+        content: times,
+        colSpan: 2,
+      },
+    ];
+    cliTable.push(funcTr);
+    const functionTableHead = ['Resource', 'Limitation', 'Avg', 'Max', 'Min', 'Sum'].map((item) =>
+      Colors.brightCyan.bold(item)
+    );
+    cliTable.push(functionTableHead);
+    data.forEach(([key, limitation, avg, max, min, sum]) => {
+      const average = formatTableCell(avg, limitation);
+      const maximum = formatTableCell(max, limitation);
+      const minimum = formatTableCell(min, limitation);
+      cliTable.push([Colors.brightCyan.bold(key as string), limitation, average, maximum, minimum, sum]);
+    });
+  });
+  console.log(cliTable.toString());
+};
+
+const formatTableCell = (cellValue: string | number, limit: string | number) => {
   // calculate the percentage
-  const percent = parseFloat(((cellValue / limit) * 100).toFixed(2));
+  const percent = parseFloat(((Number(cellValue) / Number(limit)) * 100).toFixed(2));
   // set the color based on the percentage
-  const isWarning = percent > STELLAR_LIMITS_CURSORS.WARNING * 100;
   const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
   const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
 
   if (isError) {
-    return style.style(percent + '%', 'bgRed');
-  } else if (isDanger) {
-    return style.style(percent + '%', 'bgMagenta');
-  } else if (isWarning) {
-    return style.style(percent + '%', 'bgYellow');
+    return Colors.brightRed.bold(cellValue.toString());
   }
-  return percent + '%';
+  if (isDanger) {
+    return Colors.brightYellow.bold(cellValue.toString());
+  }
+  return cellValue;
 };
