@@ -1,5 +1,6 @@
 import Table from 'tty-table';
 import CliTable3 from 'cli-table3';
+import Colors from '@colors/colors';
 import { ContractStore, MetricStatistics, ResourceMetricKeys, ResultStatistics } from 'stellar-resource-usage';
 
 import { STELLAR_LIMITS_CURSORS } from '@/types/enums';
@@ -174,22 +175,68 @@ export const loadTableDataV2 = (statistics: ResultStatistics) => {
 export const printTableV2 = (contractId: string, store: ContractStore) => {
   // printTableInfo();
   const cliTable = new CliTable3({
-    head: ['Resource Usage Table'],
     style: { head: [], border: [] },
   });
-  const contractTr = { ContractId: contractId };
+  cliTable.push([
+    {
+      colSpan: 6,
+      content: Colors.brightCyan.bold('Resource Usage Table'),
+      hAlign: 'center',
+    },
+  ]);
+  const labelTr = [
+    { content: Colors.brightCyan.bold('Highligh Color'), colSpan: 2 },
+    { content: Colors.brightYellow.bold('Warning: 80% - 95%'), colSpan: 2 },
+    { content: Colors.brightRed.bold('Error: Over 95%'), colSpan: 2 },
+  ];
+  const contractTr = [
+    { content: Colors.brightCyan.bold('Contract'), colSpan: 2 },
+    { content: contractId, colSpan: 4 },
+  ];
+  cliTable.push(labelTr);
   cliTable.push(contractTr);
-
   const statistics = calcStatistics(store);
   const res = loadTableDataV2(statistics);
   res.forEach(({ func, times, data }) => {
-    const funcTr = { Function: func, Times: times };
+    const funcTr = [
+      Colors.brightCyan.bold('Function'),
+      {
+        content: func,
+        colSpan: 2,
+      },
+      Colors.brightCyan.bold('Times'),
+      {
+        content: times,
+        colSpan: 2,
+      },
+    ];
     cliTable.push(funcTr);
-    const functionTableHead = ['Resource', 'Limitation', 'Avg', 'Max', 'Min', 'Sum'];
+    const functionTableHead = ['Resource', 'Limitation', 'Avg', 'Max', 'Min', 'Sum'].map((item) =>
+      Colors.brightCyan.bold(item)
+    );
     cliTable.push(functionTableHead);
     data.forEach(([key, limitation, avg, max, min, sum]) => {
-      cliTable.push([key, limitation, avg, max, min, sum]);
+      const average = formatTableCell(avg, limitation);
+      const maximum = formatTableCell(max, limitation);
+      const minimum = formatTableCell(min, limitation);
+      cliTable.push([Colors.brightCyan.bold(key as string), limitation, average, maximum, minimum, sum]);
     });
   });
   console.log(cliTable.toString());
+};
+
+const formatTableCell = (cellValue: string | number, limit: string | number) => {
+  // calculate the percentage
+  const percent = parseFloat(((Number(cellValue) / Number(limit)) * 100).toFixed(2));
+  // set the color based on the percentage
+  const isDanger = percent > STELLAR_LIMITS_CURSORS.DANGER * 100;
+  const isError = percent > STELLAR_LIMITS_CURSORS.ERROR * 100;
+
+  if (isError) {
+    return Colors.brightRed.bold(cellValue.toString());
+  }
+  if (isDanger) {
+    return Colors.brightYellow.bold(cellValue.toString());
+  }
+  return cellValue;
 };
