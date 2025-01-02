@@ -39,7 +39,7 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
       const contractFunNames = this.spec.funcs().map((fun: any) => fun.name().toString());
       for (const funName of contractFunNames) {
         const originalFun = this[funName];
-        if (originalFun === CONSTRUCTOR_FUNC) {
+        if (funName === CONSTRUCTOR_FUNC) {
           return;
         }
         this[funName] = async (...args: any) => {
