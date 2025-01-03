@@ -186,8 +186,13 @@ export const printTableV2 = (contractId: string, store: ContractStore) => {
   ]);
   const labelTr = [
     { content: Colors.brightCyan.bold('Highligh Color'), colSpan: 2 },
-    { content: Colors.brightYellow.bold('Warning: 80% - 95%'), colSpan: 2 },
-    { content: Colors.brightRed.bold('Error: Over 95%'), colSpan: 2 },
+    {
+      content: Colors.brightYellow.bold(
+        `Warning: ${STELLAR_LIMITS_CURSORS.DANGER * 100}% - ${STELLAR_LIMITS_CURSORS.ERROR * 100}%`
+      ),
+      colSpan: 2,
+    },
+    { content: Colors.brightRed.bold(`Error: Over ${STELLAR_LIMITS_CURSORS.ERROR}%`), colSpan: 2 },
   ];
   const contractTr = [
     { content: Colors.brightCyan.bold('Contract'), colSpan: 2 },
