@@ -72,11 +72,9 @@ declare module 'stellar-resource-usage' {
 
   export const STELLAR_LIMITS_CONFIG: TXResourceUsageStats;
 
-  export function printTable(rows: any[]): any[];
+  export function printTableV2(rows: any[]): any[];
 
   export function getStats(props: CalcResourceProps): Promise<anyObj>;
-
-  export function calcResource(props: CalcResourceProps): Promise<boolean>;
 
   export function ResourceUsageClient<T>(Client: any, options: ClientOptions): Promise<ResourceUsageClientInstance & T>;
 }
