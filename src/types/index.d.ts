@@ -78,5 +78,5 @@ declare module 'stellar-resource-usage' {
 
   export function calcResource(props: CalcResourceProps): Promise<boolean>;
 
-  export function ResourceUsageClient<T>(Client: any, options: ClientOptions): ResourceUsageClientInstance & T;
+  export function ResourceUsageClient<T>(Client: any, options: ClientOptions): Promise<ResourceUsageClientInstance & T>;
 }
