@@ -118,10 +118,10 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
 };
 
 export const handleTxToGetStatsV2 = async (
-  assemTx: AssembledTransaction<null>,
+  assembledTx: AssembledTransaction<null>,
   tx: rpc.Api.GetSuccessfulTransactionResponse
 ): Promise<Record<string, number | undefined>> => {
-  const resources = assemTx.simulationData.transactionData.resources();
+  const resources = assembledTx.simulationData.transactionData.resources();
   const footprint = resources.footprint();
 
   const metrics: Record<string, number | undefined> = {
