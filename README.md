@@ -5,6 +5,8 @@
 
 Welcome to Stellar Resource Usage! This tool is designed for Web3 developers working on the Stellar network, providing a convenient way to monitor and analyze the resources consumed by smart contracts during execution. This enables developers to optimize contract performance effectively.
 
+![Result table](./public/report.png)
+
 # Features Overview
 
 1. **Real-Time Resource Monitoring**: The tool monitors resource usage in real-time during smart contract execution, including `cpu_insns`, `mem_bytes` ect. for more information,see the [supported resource documentation](./docs/RESOURCE_LIMITS_DESC.md).
@@ -150,7 +152,40 @@ const callContract = async () => {
 callContract();
 ```
 
+**Scenario 2**
 
+Using `ResourceServer`.
+
+Note: We'll refactor the function to avoid need user to pass secret key.
+
+```
+import { Keypair, Networks, nativeToScVal } from '@stellar/stellar-sdk';
+import { ResourceServer } from 'stellar-resource-usage/src/main';
+
+
+const rpcUrl = 'http://localhost:9000/rpc';
+const contractId = Bun.env.CONTRACT_ID;
+const networkPassphrase = Networks.STANDALONE;
+
+const args = [
+  nativeToScVal(150, { type: 'u32' }),
+  ...
+]
+
+const resourceServer = ResourceServer({
+  networkPassphrase,
+  secretKey, // Your secret key.
+  rpcUrl,
+});
+
+resourceServer.calcResourceForTx([
+  {
+    contract: contractId,
+    function: 'func',
+    args,
+  }
+]);
+```
 5. Execute the file
 
 For typescript files, we recommend using [bun](https://bun.sh/) to run directly, which makes the command very simple, just execute `bun run filepath`. Then you will see the reporter in the terminal.
