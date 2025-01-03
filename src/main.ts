@@ -16,7 +16,6 @@ import { getStats, handleTxToGetStatsV2 } from '@/tasks';
 import { updateTxLimits } from './utils/utils';
 
 interface ServerInfo {
-  contractId: string;
   networkPassphrase: string;
   secretKey: string;
   rpcUrl: string;
@@ -66,9 +65,10 @@ export function ResourceServer(info: ServerInfo) {
       await updateTxLimits();
       const tx = await this.buildTransaction(optsOfOperations);
       const stats = (await getStats({ tx, keypair: this.keypair, rpcServer: this.rpcServer })) as anyObj;
-      tx.operations.forEach((op) => {
-        const contractId = 'CCHSSMVOJRZN3SKPSWUKAY6A44QJ7TOIEAX6IITL624FVWUG3DFQ2IEG';
+      tx.operations.forEach((op, index) => {
+        const contractId: string = optsOfOperations[index].contract;
         const funcName: string = (op as any).func.invokeContract().functionName();
+
         if (!this.storedStatus[contractId]) {
           this.storedStatus[contractId] = {};
         }

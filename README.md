@@ -25,19 +25,18 @@ To install and run Stellar Resource Usage locally, follow these steps:
 
 1. Install dependencies:
 
-npm:
-
+Using npm:
 ```sh
 npm i stellar-resource-usage
 ```
 
-pnpm
+Using pnpm:
 
 ```sh
 pnpm add stellar-resource-usage
 ```
 
-bun
+Using bun:
 
 ```sh
 bun add stellar-resource-usage
@@ -61,13 +60,14 @@ npx dockerDev [--port=your port] # The default port is 8000
 
 **Scenario 1**
 
-When you generate a typescript module using the `stellar contract bindings` command, and use the `Client` in this module to call and execute the contract functions:
+When you generate a typescript module using the `stellar contract bindings typescript` command, and use the `Client` in this module to call and execute the contract functions.
+<!-- Please refer to [the link](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli#stellar-contract-bindings-typescript) and/or [deploy.example.ts](./deploy.example.ts) if you want to learn more about **bindings**. -->
 
 ```js
 import { Keypair } from "@stellar/stellar-sdk";
 import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
 
-import { Client, networks } from "path/to/module";
+import { Client, networks } from "yourPath/to/module";
 
 const callContract = async () => {
   try {
@@ -104,15 +104,14 @@ callContract();
 
 ```
 
-Add the `stellar-resource-usage` library:
+After use `stellar-resource-usage`:
 
 ```js
 import { Keypair } from "@stellar/stellar-sdk";
 import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
 // Add ResourceUsageClient
 + import { ResourceUsageClient } from "stellar-resource-usage";
-
-import { Client, networks } from "path/to/module";
+import { Client, networks } from "./package/typescriptBinding/src";
 
 const callContract = async () => {
   try {
@@ -151,12 +150,10 @@ const callContract = async () => {
 callContract();
 ```
 
-**Scenario 2**
-...
 
 5. Execute the file
 
-For typescript files, we recommend using `bun` to run directly, which makes the command very simple, just execute `bun run filepath`. then you will see the reporter in the console.
+For typescript files, we recommend using [bun](https://bun.sh/) to run directly, which makes the command very simple, just execute `bun run filepath`. Then you will see the reporter in the terminal.
 
 # Support
 If you need assistance or have any questions, you can submit issues on GitHub Issues, and we'll respond as soon as possible.

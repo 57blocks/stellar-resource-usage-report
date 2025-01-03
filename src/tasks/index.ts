@@ -98,20 +98,18 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
           if (!getRes.resultMetaXdr) {
             throw 'Empty resultMetaXDR in getTransaction response';
           }
-          const res = await handleTxToGetStats(simRes, getRes);
-          return res;
+          return await handleTxToGetStats(simRes, getRes);
         } else {
-          console.log(await rpcServer._getTransaction(sendRes.hash));
+          console.log('Failed to simulate transaction', '\n', await rpcServer._getTransaction(sendRes.hash));
         }
       } else {
         console.log(await rpcServer._sendTransaction(assembleTx));
       }
     } catch (error) {
-      console.log('Sending transaction failed');
-      console.log(JSON.stringify(error));
+      console.log('Sending transaction failed', '\n', JSON.stringify(error));
     }
   } else {
-    console.log(await rpcServer._simulateTransaction(tx));
+    console.log('Failed to simulate transaction', '\n', await rpcServer._simulateTransaction(tx));
   }
 };
 

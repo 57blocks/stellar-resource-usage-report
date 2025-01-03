@@ -1,7 +1,7 @@
 import { Horizon, Keypair, Networks } from '@stellar/stellar-sdk';
 import { $ } from 'bun';
 
-await $`bun rimraf target/wasm32-unknown-unknown/release .env.local`;
+await $`bun rimraf target/wasm32-unknown-unknown/release .env.local packages`;
 console.log('cleaned target');
 
 // Make sure the port the same as the docker port.
@@ -44,4 +44,9 @@ file += `CONTRACT_ID=${contractId}\n`;
 file += `SECRET=${secret}`;
 
 await Bun.write('.env.local', file);
+// You can import Client from './packages/typescriptBinding'.
+await $`stellar contract bindings typescript \
+  --network net57Blocks \
+  --contract-id ${contractId} \
+  --output-dir packages/typescriptBinding`;
 console.log('✅');
