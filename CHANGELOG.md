@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.6
+
+### Patch Changes
+
+- 6591ab3: add ResourceServer
+
 ## 1.1.5
 
 ### Patch Changes
