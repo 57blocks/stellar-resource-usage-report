@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.5
+
+### Patch Changes
+
+- 328d404: fix the export error
+
 ## 1.1.4
 
 ### Patch Changes
