@@ -22,6 +22,7 @@ const calcStatistics = (store: ContractStore) => {
     res[contractName] = {};
     Object.entries(funcs).forEach(([funcName, data]) => {
       const times = data.length;
+
       metricKeys.forEach((key) => {
         if (!data[0][key]) {
           return;

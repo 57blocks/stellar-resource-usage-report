@@ -27,10 +27,10 @@ const handleTxToGetStats = async (
       const eventBody = e.event().body().v0();
       const topics = eventBody.topics().map(scValToNative);
 
-      const itemData = scValToNative(eventBody.data());
-      if (topics.includes('core_metrics')) {
-        console.log('==', topics, itemData, '\n');
-      }
+      // const itemData = scValToNative(eventBody.data());
+      // if (topics.includes('core_metrics')) {
+      //   console.log('==', topics, itemData, '\n');
+      // }
 
       if (!topics.includes('core_metrics')) return;
 
@@ -75,7 +75,6 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
 
   if (rpc.Api.isSimulationSuccess(simRes)) {
     simRes.minResourceFee = MAX_U32.toString();
-
     const resources = simRes.transactionData.build().resources();
     const assembleTx = rpc
       .assembleTransaction(tx, simRes)
@@ -86,7 +85,6 @@ export const getStats = async ({ tx, rpcServer, keypair, resourceFee = 100_000_0
           .build()
       )
       .build();
-
     assembleTx.sign(keypair);
 
     try {
