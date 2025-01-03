@@ -192,7 +192,7 @@ export const printTableV2 = (contractId: string, store: ContractStore) => {
       ),
       colSpan: 2,
     },
-    { content: Colors.brightRed.bold(`Error: Over ${STELLAR_LIMITS_CURSORS.ERROR}%`), colSpan: 2 },
+    { content: Colors.brightRed.bold(`Error: Over ${STELLAR_LIMITS_CURSORS.ERROR * 100}%`), colSpan: 2 },
   ];
   const contractTr = [
     { content: Colors.brightCyan.bold('Contract'), colSpan: 2 },
