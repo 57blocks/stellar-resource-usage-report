@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.4
+
+### Patch Changes
+
+- c4a05e9: update the warning tips's line
+
 ## 1.1.3
 
 ### Patch Changes
