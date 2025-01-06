@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.9
+
+### Patch Changes
+
+- d7ebe83: bug fixed & test case updated
+
 ## 1.1.8
 
 ### Patch Changes
