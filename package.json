@@ -6,10 +6,11 @@
     "type": "git",
     "url": "git+https://github.com/57blocks/stellar-resource-usage-report.git"
   },
-  "main": "src/main.ts",
+  "sideEffects": false,
+  "main": "dist/main.js",
   "private": false,
   "type": "module",
-  "types": "src/types/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "bun run clean && bun ./bun.build.js",
@@ -20,7 +21,9 @@
     "prepare": "husky",
     "changelog": "changeset",
     "version": "changeset version --tag",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "publish": "bun publish",
+    "prepublishOnly": "bun run build"
   },
   "bin": {
     "dockerDev": "./command.cjs"
@@ -68,6 +71,17 @@
     "lodash-es": "^4.17.21",
     "tty-table": "^4.2.3"
   },
+  "files": [
+    "dist",
+    "docs",
+    "index.d.ts",
+    "command.cjs",
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "deploy.example.ts",
+    "docker-unlimited.sh"
+  ],
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
