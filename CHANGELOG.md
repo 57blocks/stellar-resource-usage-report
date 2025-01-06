@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.8
+
+### Patch Changes
+
+- 5232bf3: updated the org name
+
 ## 1.1.7
 
 ### Patch Changes
