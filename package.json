@@ -1,6 +1,11 @@
 {
-  "name": "stellar-resource-usage",
+  "name": "@57block/stellar-resource-usage",
   "version": "1.1.6",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/57blocks/stellar-resource-usage-report.git"
+  },
   "main": "src/main.ts",
   "private": false,
   "type": "module",
@@ -50,8 +55,6 @@
     "nodejs",
     "typescript"
   ],
-  "author": "",
-  "license": "MIT",
   "description": "",
   "dependencies": {
     "@colors/colors": "^1.6.0",
