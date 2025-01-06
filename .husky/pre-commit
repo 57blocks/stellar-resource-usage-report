@@ -2,5 +2,4 @@
 
 [ -n "$GITHUB_ACTIONS" ] && exit 0
 bun lint-staged 
-bun run test
 bun tsc
