@@ -1,5 +1,12 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 1.1.7
+
+### Patch Changes
+
+- 97f9f46: - release flow updated
+  - optimize client method.
+
 ## 1.1.6
 
 ### Patch Changes
