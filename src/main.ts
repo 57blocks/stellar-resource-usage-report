@@ -1,4 +1,3 @@
-import { type ClientOptions } from '@stellar/stellar-sdk/contract';
 import {
   rpc,
   Keypair,
@@ -8,6 +7,7 @@ import {
   Operation,
   OperationOptions,
 } from '@stellar/stellar-sdk';
+import { AssembledTransaction, type ClientOptions } from '@stellar/stellar-sdk/contract';
 import { ContractStore, ResourceUsageClientInstance } from 'stellar-resource-usage';
 
 import { printTableV2 } from '@/share';
@@ -112,24 +112,29 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
         if (funName === CONSTRUCTOR_FUNC) {
           return;
         }
-        this[funName] = async (...args: any) => {
+        this[funName] = async (...args: any): Promise<AssembledTransaction<any>> => {
           try {
             const assembledTx = await originalFun(...args);
-            const res = await assembledTx.signAndSend();
-            const stats = await handleTxToGetStatsV2(assembledTx as any, res.getTransactionResponse as any);
-            if (!this.storedStatus[this.contractId]) {
-              // init object
-              this.storedStatus[this.contractId] = {};
-            }
-            if (!this.storedStatus[this.contractId][funName]) {
-              // init array
-              this.storedStatus[this.contractId][funName] = [stats];
-            } else {
-              this.storedStatus[this.contractId][funName].push(stats);
-            }
-            return assembledTx;
+            return {
+              ...assembledTx,
+              signAndSend: async () => {
+                const res = await assembledTx.signAndSend();
+                const stats = await handleTxToGetStatsV2(assembledTx as any, res.getTransactionResponse as any);
+                if (!this.storedStatus[this.contractId]) {
+                  // init object
+                  this.storedStatus[this.contractId] = {};
+                }
+                if (!this.storedStatus[this.contractId][funName]) {
+                  // init array
+                  this.storedStatus[this.contractId][funName] = [stats];
+                } else {
+                  this.storedStatus[this.contractId][funName].push(stats);
+                }
+              },
+            };
           } catch (error) {
             console.error(error);
+            throw error;
           }
         };
       }
