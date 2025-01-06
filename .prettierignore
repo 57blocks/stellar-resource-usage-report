@@ -4,3 +4,4 @@ node_modules/
 fixtures/
 .github/auto_assign.yml
 *.md
+test-contract/

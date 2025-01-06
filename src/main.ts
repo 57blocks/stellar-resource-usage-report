@@ -130,6 +130,7 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
                 } else {
                   this.storedStatus[this.contractId][funName].push(stats);
                 }
+                return res;
               },
             };
           } catch (error) {
