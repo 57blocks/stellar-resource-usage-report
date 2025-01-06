@@ -3,6 +3,7 @@ const results = await Bun.build({
   publicPath: '',
   outdir: './dist',
   sourcemap: 'inline',
+  minify: true,
 });
 
 if (results.success == false) {
