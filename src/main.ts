@@ -8,7 +8,7 @@ import {
   OperationOptions,
 } from '@stellar/stellar-sdk';
 import { AssembledTransaction, type ClientOptions } from '@stellar/stellar-sdk/contract';
-import { ContractStore, ResourceUsageClientInstance } from 'stellar-resource-usage';
+import { ContractStore, ResourceUsageClientInstance } from '@57block/stellar-resource-usage';
 
 import { printTableV2 } from '@/share';
 import { anyObj } from '@/types/interface';

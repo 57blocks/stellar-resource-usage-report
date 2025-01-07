@@ -1,6 +1,6 @@
 import CliTable3 from 'cli-table3';
 import Colors from '@colors/colors';
-import { ContractStore, MetricStatistics, ResourceMetricKeys, ResultStatistics } from 'stellar-resource-usage';
+import { ContractStore, MetricStatistics, ResourceMetricKeys, ResultStatistics } from '@57block/stellar-resource-usage';
 
 import { STELLAR_LIMITS_CURSORS } from '@/types/enums';
 import { MetricKeys, STELLAR_LIMITS_CONFIG } from '@/constants';

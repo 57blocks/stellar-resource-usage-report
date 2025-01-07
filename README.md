@@ -1,7 +1,7 @@
-# Stellar Resource Usage
+[![NPM version](https://img.shields.io/npm/v/@57block/stellar-resource-usage)](https://www.npmjs.com/package/@57block/stellar-resource-usage) 
+[![View changelog](https://img.shields.io/badge/Explore%20Changelog-brightgreen)](https://github.com/57blocks/stellar-resource-usage-report/blob/main/CHANGELOG.md)
 
-[![NPM version](https://img.shields.io/npm/v/stellar-resource-usage)](https://www.npmjs.com/package/stellar-resource-usage) 
-[![View changelog](https://img.shields.io/badge/Explore%20Changelog-brightgreen)](https://github.com/57blocks/stellar-resource-usage-report-private/blob/main/CHANGELOG.md)
+# Stellar Resource Usage
 
 Welcome to Stellar Resource Usage! This tool is designed for Web3 developers working on the Stellar network, providing a convenient way to monitor and analyze the resources consumed by smart contracts during execution. This enables developers to optimize contract performance effectively.
 
@@ -29,19 +29,19 @@ To install and run Stellar Resource Usage locally, follow these steps:
 
 Using npm:
 ```sh
-npm i stellar-resource-usage
+npm i @57block/stellar-resource-usage
 ```
 
 Using pnpm:
 
 ```sh
-pnpm add stellar-resource-usage
+pnpm add @57block/stellar-resource-usage
 ```
 
 Using bun:
 
 ```sh
-bun add stellar-resource-usage
+bun add @57block/stellar-resource-usage
 ```
 
 # Usage Instructions
@@ -58,14 +58,14 @@ npx dockerDev [--port=your port] # The default port is 8000
 
 3. Make sure you have seen a steady stream of *stellar-core: Synced!* logs in `step 2`. Deploy your contract once your local network is running. If you don’t know how to deploy a contract, you can check the [Stellar build doc](https://developers.stellar.org/docs/build/smart-contracts/getting-started) or the [deploy.example.ts](./deploy.example.ts) we provide for reference.
 
-4. Using `stellar-resource-usage` in your code
+4. Using `@57block/stellar-resource-usage` in your code
 
 **Scenario 1**
 
 When you generate a typescript module using the `stellar contract bindings typescript` command, and use the `Client` in this module to call and execute the contract functions.
 <!-- Please refer to [the link](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli#stellar-contract-bindings-typescript) and/or [deploy.example.ts](./deploy.example.ts) if you want to learn more about **bindings**. -->
 
-```js
+```ts
 import { Keypair } from "@stellar/stellar-sdk";
 import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
 
@@ -89,7 +89,7 @@ const callContract = async () => {
       allowHttp: true,
       signTransaction,
     });
-    await _contract.run({
+    const res = await _contract.run({
       cpu: 700,
       mem: 180,
       set: 20,
@@ -97,6 +97,8 @@ const callContract = async () => {
       events: 1,
       _txn: Buffer.alloc(71_680),
     });
+
+    await res.signAndSend();
   } catch (error) {
     console.error(error);
   }
@@ -106,13 +108,13 @@ callContract();
 
 ```
 
-After use `stellar-resource-usage`:
+While using `@57block/stellar-resource-usage`:
 
-```js
+```ts
 import { Keypair } from "@stellar/stellar-sdk";
 import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
 // Add ResourceUsageClient
-+ import { ResourceUsageClient } from "stellar-resource-usage";
++ import { ResourceUsageClient } from "@57block/stellar-resource-usage";
 import { Client, networks } from "./package/typescriptBinding/src";
 
 const callContract = async () => {
@@ -134,7 +136,7 @@ const callContract = async () => {
       allowHttp: true,
       signTransaction,
     });
-    await _contract.run({
+    const res = await _contract.run({
       cpu: 700,
       mem: 180,
       set: 20,
@@ -142,6 +144,8 @@ const callContract = async () => {
       events: 1,
       _txn: Buffer.alloc(71_680),
     });
+
+    await res.signAndSend();
 
 +   _contract.printTable();
   } catch (error) {
@@ -158,9 +162,9 @@ Using `ResourceServer`.
 
 Note: We'll refactor the function to avoid need user to pass secret key.
 
-```
+```ts
 import { Keypair, Networks, nativeToScVal } from '@stellar/stellar-sdk';
-import { ResourceServer } from 'stellar-resource-usage/src/main';
+import { ResourceServer } from '@57block/stellar-resource-usage';
 
 
 const rpcUrl = 'http://localhost:9000/rpc';

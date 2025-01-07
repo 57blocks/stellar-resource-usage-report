@@ -1,4 +1,4 @@
-declare module 'stellar-resource-usage' {
+declare module '@57block/stellar-resource-usage' {
   import { Keypair, Transaction, rpc } from '@stellar/stellar-sdk';
 
   export interface anyObj {

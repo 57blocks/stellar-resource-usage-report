@@ -1,6 +1,6 @@
 {
-  "name": "stellar-resource-usage",
-  "version": "1.1.9",
+  "name": "@57block/stellar-resource-usage",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -22,7 +22,6 @@
     "changelog": "changeset",
     "version": "changeset version --tag",
     "release": "changeset publish",
-    "publish": "bun publish",
     "prepublishOnly": "bun run build"
   },
   "bin": {
