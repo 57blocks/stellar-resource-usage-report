@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, afterAll } from 'vitest';
 import { basicNodeSigner } from '@stellar/stellar-sdk/contract';
 import { Client, networks } from 'test-contract/src';
 import { ResourceUsageClient } from 'src/main';
@@ -17,9 +17,12 @@ describe('Client', async () => {
     allowHttp: true,
     signTransaction,
   });
-  it('should work', async () => {
+  it('should init successfully', async () => {
     const initAssembledTx = await contract.init();
-    await initAssembledTx.signAndSend();
+    const initTx = await initAssembledTx.signAndSend();
+    expect(initTx.getTransactionResponse?.txHash).not.to.be.empty.and.to.be.a('HexString');
+  });
+  it('should run successfully', async () => {
     const runAssembledTx = await contract.run({
       cpu: 700,
       mem: 180,
@@ -29,7 +32,10 @@ describe('Client', async () => {
       _txn: Buffer.alloc(71_680),
     });
     const runTx = await runAssembledTx.signAndSend();
+    expect(runTx.getTransactionResponse?.txHash).not.to.be.empty.and.to.be.a('HexString');
     expect(runTx.result).toBe(null);
+  });
+  afterAll(() => {
     contract.printTable();
   });
 });
