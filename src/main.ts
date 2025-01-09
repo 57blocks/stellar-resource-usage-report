@@ -1,96 +1,106 @@
-import {
-  rpc,
-  Keypair,
-  Account,
-  TransactionBuilder,
-  Transaction,
-  Operation,
-  OperationOptions,
-} from '@stellar/stellar-sdk';
+import { rpc, Transaction, FeeBumpTransaction, StrKey } from '@stellar/stellar-sdk';
+import { assembleTransaction } from '@stellar/stellar-sdk/rpc';
 import { AssembledTransaction, type ClientOptions } from '@stellar/stellar-sdk/contract';
 import { ContractStore, ResourceUsageClientInstance } from '@57block/stellar-resource-usage';
 
 import { printTableV2 } from '@/share';
-import { anyObj } from '@/types/interface';
-import { getStats, handleTxToGetStatsV2 } from '@/tasks';
-import { updateTxLimits } from './utils/utils';
+import { handleTxToGetStats } from '@/tasks';
+import { updateTxLimits, withExponentialBackoff } from './utils/utils';
+import { STELLAR_LIMITS_CONFIG } from './constants';
 
-interface ServerInfo {
-  networkPassphrase: string;
-  secretKey: string;
-  rpcUrl: string;
+interface HashMapValue {
+  sendTxRes: rpc.Api.SendTransactionResponse;
+  transaction: Transaction | FeeBumpTransaction | undefined;
+  simTxRes: rpc.Api.SimulateTransactionResponse | undefined;
 }
-
-export function ResourceServer(info: ServerInfo) {
-  class ResourceServer {
-    info: ServerInfo;
-    rpcServer: rpc.Server;
-    keypair: Keypair;
-    storedStatus: ContractStore = {};
-    sourceAccount: Account | undefined = undefined;
-
-    constructor(info: ServerInfo) {
-      this.info = info;
-      this.keypair = Keypair.fromSecret(info.secretKey);
-      this.rpcServer = new rpc.Server(info.rpcUrl, { allowHttp: true });
-    }
-
-    async getAccount(): Promise<Account> {
-      const publicKey = this.keypair.publicKey();
-      const sourceAccount = await this.rpcServer
-        .getAccount(publicKey)
-        .then((account) => new Account(account.accountId(), account.sequenceNumber()))
-        .catch(() => {
-          throw new Error(`Issue with ${publicKey} account.`);
-        });
-      this.sourceAccount = sourceAccount;
-      return sourceAccount;
-    }
-
-    async buildTransaction(optsOfOperations: OperationOptions.InvokeContractFunction[]): Promise<Transaction> {
-      const sourceAccount = await this.getAccount();
-      let txBuilder = new TransactionBuilder(sourceAccount, {
-        fee: '0',
-        networkPassphrase: this.info.networkPassphrase,
-      });
-
-      optsOfOperations.forEach((opts) => {
-        txBuilder = txBuilder.addOperation(Operation.invokeContractFunction(opts));
-      });
-
-      return txBuilder.setTimeout(0).build();
-    }
-
-    async calcResourceForTx(optsOfOperations: OperationOptions.InvokeContractFunction[]) {
-      await updateTxLimits();
-      const tx = await this.buildTransaction(optsOfOperations);
-      const stats = (await getStats({ tx, keypair: this.keypair, rpcServer: this.rpcServer })) as anyObj;
-      tx.operations.forEach((op, index) => {
-        const contractId: string = optsOfOperations[index].contract;
-        const funcName: string = (op as any).func.invokeContract().functionName();
-
-        if (!this.storedStatus[contractId]) {
-          this.storedStatus[contractId] = {};
-        }
-        if (!this.storedStatus[contractId][funcName]) {
-          this.storedStatus[contractId][funcName] = [stats];
-        } else {
-          this.storedStatus[contractId][funcName].push(stats);
-        }
-      });
-
-      Object.entries(this.storedStatus).forEach(([contractId]) => {
-        this.printTable(contractId);
-      });
-    }
-
-    printTable(contractId: string) {
-      const storeData = this.storedStatus;
-      printTableV2(contractId, storeData);
-    }
+export class StellarRpcServer extends rpc.Server {
+  #hash: Map<string, HashMapValue> = new Map();
+  transaction: Transaction | FeeBumpTransaction | undefined;
+  simTxRes: rpc.Api.SimulateTransactionResponse | undefined;
+  storedStats: ContractStore = {};
+  constructor(serverURL: string, opts?: rpc.Server.Options) {
+    super(serverURL, opts);
   }
 
-  return new ResourceServer(info);
+  public async printTable(): Promise<void> {
+    const txPromises = Array.from(this.#hash).map(([hash]) => {
+      return withExponentialBackoff<rpc.Api.GetTransactionResponse>(
+        () => super.getTransaction(hash),
+        (resp) => resp.status === rpc.Api.GetTransactionStatus.NOT_FOUND,
+        2
+      );
+    });
+    try {
+      const allData = await Promise.all(txPromises);
+      allData.forEach((data) => {
+        const successDatum = data.find((response) => response.status === rpc.Api.GetTransactionStatus.SUCCESS)!;
+        const { simTxRes, transaction } = this.#hash.get(successDatum.txHash)!;
+        const stats = handleTxToGetStats(simTxRes as rpc.Api.SimulateTransactionSuccessResponse, successDatum);
+        this.storeTransactionStats(transaction as Transaction, stats);
+      });
+    } catch (error) {
+      console.log('Failed to get transactions', error);
+    }
+
+    Object.keys(this.storedStats).forEach((contractId) => {
+      printTableV2(contractId, this.storedStats);
+    });
+    this.#hash.clear();
+    this.storedStats = {};
+  }
+
+  public async simulateTransaction(
+    tx: Transaction | FeeBumpTransaction,
+    resourceLeeway?: rpc.Server.ResourceLeeway
+  ): Promise<rpc.Api.SimulateTransactionResponse> {
+    const simTxResponse = await super.simulateTransaction(tx, resourceLeeway);
+    this.transaction = tx;
+    this.simTxRes = simTxResponse;
+    return simTxResponse;
+  }
+
+  public async prepareTransaction(tx: Transaction | FeeBumpTransaction) {
+    const simResponse = await this.simulateTransaction(tx);
+    if (rpc.Api.isSimulationError(simResponse)) {
+      throw new Error(simResponse.error);
+    }
+
+    return assembleTransaction(tx, simResponse).build();
+  }
+
+  public async sendTransaction(
+    transaction: Transaction | FeeBumpTransaction
+  ): Promise<rpc.Api.SendTransactionResponse> {
+    const sendTxRes = await super.sendTransaction(transaction);
+    this.#hash.set(sendTxRes.hash, { sendTxRes, transaction: this.transaction, simTxRes: this.simTxRes });
+    this.transaction = undefined;
+    this.simTxRes = undefined;
+    return sendTxRes;
+  }
+
+  public storeTransactionStats(
+    tx: Transaction | FeeBumpTransaction,
+    stats: Record<keyof typeof STELLAR_LIMITS_CONFIG, number | undefined>
+  ) {
+    tx.operations.forEach((operation) => {
+      // A tx can only perform 1 invokeHostFunction operation at most.
+      if (operation.type === 'invokeHostFunction') {
+        const contractId: string = StrKey.encodeContract(
+          (operation as any).func.invokeContract().contractAddress().value()
+        );
+        const funcName: string = (operation as any).func.invokeContract().functionName();
+
+        if (!this.storedStats[contractId]) {
+          this.storedStats[contractId] = {};
+        }
+        if (!this.storedStats[contractId][funcName]) {
+          this.storedStats[contractId][funcName] = [stats];
+        } else {
+          this.storedStats[contractId][funcName].push(stats);
+        }
+      }
+    });
+  }
 }
 
 const CONSTRUCTOR_FUNC = '__constructor';
@@ -99,7 +109,7 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
   await updateTxLimits();
   class ResourceUsage extends Client {
     contractId: string;
-    storedStatus: ContractStore = {};
+    storedStats: ContractStore = {};
     constructor() {
       if (!options.contractId) {
         throw new Error('contractId is required');
@@ -119,16 +129,16 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
               ...assembledTx,
               signAndSend: async () => {
                 const res = await assembledTx.signAndSend();
-                const stats = await handleTxToGetStatsV2(assembledTx as any, res.getTransactionResponse as any);
-                if (!this.storedStatus[this.contractId]) {
+                const stats = handleTxToGetStats(assembledTx as any, res.getTransactionResponse as any);
+                if (!this.storedStats[this.contractId]) {
                   // init object
-                  this.storedStatus[this.contractId] = {};
+                  this.storedStats[this.contractId] = {};
                 }
-                if (!this.storedStatus[this.contractId][funName]) {
+                if (!this.storedStats[this.contractId][funName]) {
                   // init array
-                  this.storedStatus[this.contractId][funName] = [stats];
+                  this.storedStats[this.contractId][funName] = [stats];
                 } else {
-                  this.storedStatus[this.contractId][funName].push(stats);
+                  this.storedStats[this.contractId][funName].push(stats);
                 }
                 return res;
               },
@@ -142,7 +152,7 @@ export async function ResourceUsageClient<T>(Client: any, options: ClientOptions
       this.contractId = options.contractId;
     }
     printTable() {
-      const storeData = this.storedStatus;
+      const storeData = this.storedStats;
       printTableV2(this.contractId, storeData);
     }
   }

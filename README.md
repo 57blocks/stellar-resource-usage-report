@@ -158,38 +158,128 @@ callContract();
 
 **Scenario 2**
 
-Using `ResourceServer`.
-
-Note: We'll refactor the function to avoid need user to pass secret key.
+Using `StellarRpcServer`.
 
 ```ts
-import { Keypair, Networks, nativeToScVal } from '@stellar/stellar-sdk';
-import { ResourceServer } from '@57block/stellar-resource-usage';
+import { Keypair, Networks, nativeToScVal, rpc, TransactionBuilder, Operation, Account } from '@stellar/stellar-sdk';
 
-
-const rpcUrl = 'http://localhost:9000/rpc';
+const rpcUrl = 'http://localhost:8000/rpc';
+const keypair = Keypair.fromSecret(Bun.env.SECRET);
 const contractId = Bun.env.CONTRACT_ID;
 const networkPassphrase = Networks.STANDALONE;
-
+const publicKey = keypair.publicKey();
+const rpcServer = new rpc.Server(rpcUrl, { allowHttp: true });
+const sourceAccount = await rpcServer
+  .getAccount(publicKey)
+  .then((account) => new Account(account.accountId(), account.sequenceNumber()))
+  .catch(() => {
+    throw new Error(`Issue with ${publicKey} account.`);
+  })
 const args = [
   nativeToScVal(150, { type: 'u32' }),
-  ...
-]
-
-const resourceServer = ResourceServer({
+  nativeToScVal(20, { type: 'u32' }),
+  nativeToScVal(2, { type: 'u32' }),
+  nativeToScVal(4, { type: 'u32' }),
+  nativeToScVal(1, { type: 'u32' }),
+  nativeToScVal(Buffer.alloc(71_680)),
+];
+const tx = new TransactionBuilder(sourceAccount, {
+  fee: '0',
   networkPassphrase,
-  secretKey, // Your secret key.
-  rpcUrl,
-});
+})
+  .addOperation(
+    Operation.invokeContractFunction({
+      contract: contractId,
+      function: 'run',
+      args,
+    })
+  )
+  .setTimeout(0)
+  .build();
 
-resourceServer.calcResourceForTx([
-  {
-    contract: contractId,
-    function: 'func',
-    args,
-  }
-]);
+const simRes = await rpcServer.simulateTransaction(tx);
+const MAX_U32 = 2 ** 32 - 1;
+if (rpc.Api.isSimulationSuccess(simRes)) {
+  simRes.minResourceFee = MAX_U32.toString();
+  const resources = simRes.transactionData.build().resources();
+  const assembledTx = rpc
+    .assembleTransaction(tx, simRes)
+    .setSorobanData(
+      simRes.transactionData
+        .setResourceFee(100_000_000)
+        .setResources(MAX_U32, resources.readBytes(), resources.writeBytes())
+        .build()
+    )
+    .build();
+  assembledTx.sign(keypair);
+
+  await rpcServer.sendTransaction(assembledTx);
+  rpcServer.printTable();
+}
 ```
+
+While using `@57block/stellar-resource-usage`:
+
+```ts
+import { Keypair, Networks, nativeToScVal, rpc, TransactionBuilder, Operation, Account } from '@stellar/stellar-sdk';
++ import { StellarRpcServer } from "@57block/stellar-resource-usage";
+
+const rpcUrl = 'http://localhost:8000/rpc';
+const keypair = Keypair.fromSecret(Bun.env.SECRET);
+const contractId = Bun.env.CONTRACT_ID;
+const networkPassphrase = Networks.STANDALONE;
+const publicKey = keypair.publicKey();
+- const rpcServer = new rpc.Server(rpcUrl, { allowHttp: true });
++ const rpcServer = new StellarRpcServer(rpcUrl, { allowHttp: true });
+const sourceAccount = await rpcServer
+  .getAccount(publicKey)
+  .then((account) => new Account(account.accountId(), account.sequenceNumber()))
+  .catch(() => {
+    throw new Error(`Issue with ${publicKey} account.`);
+  })
+const args = [
+  nativeToScVal(150, { type: 'u32' }),
+  nativeToScVal(20, { type: 'u32' }),
+  nativeToScVal(2, { type: 'u32' }),
+  nativeToScVal(4, { type: 'u32' }),
+  nativeToScVal(1, { type: 'u32' }),
+  nativeToScVal(Buffer.alloc(71_680)),
+];
+const tx = new TransactionBuilder(sourceAccount, {
+  fee: '0',
+  networkPassphrase,
+})
+  .addOperation(
+    Operation.invokeContractFunction({
+      contract: contractId,
+      function: 'run',
+      args,
+    })
+  )
+  .setTimeout(0)
+  .build();
+
+const simRes = await rpcServer.simulateTransaction(tx);
+const MAX_U32 = 2 ** 32 - 1;
+if (rpc.Api.isSimulationSuccess(simRes)) {
+  simRes.minResourceFee = MAX_U32.toString();
+  const resources = simRes.transactionData.build().resources();
+  const assembledTx = rpc
+    .assembleTransaction(tx, simRes)
+    .setSorobanData(
+      simRes.transactionData
+        .setResourceFee(100_000_000)
+        .setResources(MAX_U32, resources.readBytes(), resources.writeBytes())
+        .build()
+    )
+    .build();
+  assembledTx.sign(keypair);
+
+  await rpcServer.sendTransaction(assembledTx);
++ rpcServer.printTable();
+}
+```
+
 5. Execute the file
 
 For typescript files, we recommend using [bun](https://bun.sh/) to run directly, which makes the command very simple, just execute `bun run filepath`. Then you will see the reporter in the terminal.
