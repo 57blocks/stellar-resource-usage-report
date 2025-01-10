@@ -60,7 +60,7 @@
   "description": "",
   "dependencies": {
     "@colors/colors": "^1.6.0",
-    "@stellar/stellar-sdk": "^13.0.0",
+    "@stellar/stellar-sdk": "^13.1.0",
     "@types/lodash-es": "^4.17.12",
     "bun": "^1.1.38",
     "chalk": "^5.3.0",

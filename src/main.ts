@@ -1,5 +1,4 @@
 import { rpc, Transaction, FeeBumpTransaction, StrKey } from '@stellar/stellar-sdk';
-import { assembleTransaction } from '@stellar/stellar-sdk/rpc';
 import { AssembledTransaction, type ClientOptions } from '@stellar/stellar-sdk/contract';
 import { ContractStore, ResourceUsageClientInstance } from '@57block/stellar-resource-usage';
 
@@ -27,16 +26,20 @@ export class StellarRpcServer extends rpc.Server {
       return withExponentialBackoff<rpc.Api.GetTransactionResponse>(
         () => super.getTransaction(hash),
         (resp) => resp.status === rpc.Api.GetTransactionStatus.NOT_FOUND,
-        2
+        10
       );
     });
     try {
       const allData = await Promise.all(txPromises);
       allData.forEach((data) => {
-        const successDatum = data.find((response) => response.status === rpc.Api.GetTransactionStatus.SUCCESS)!;
-        const { simTxRes, transaction } = this.#hash.get(successDatum.txHash)!;
-        const stats = handleTxToGetStats(simTxRes as rpc.Api.SimulateTransactionSuccessResponse, successDatum);
-        this.storeTransactionStats(transaction as Transaction, stats);
+        const successDatum = data.find((response) => response.status === rpc.Api.GetTransactionStatus.SUCCESS);
+        if (successDatum) {
+          const { simTxRes, transaction } = this.#hash.get(successDatum.txHash)!;
+          const stats = handleTxToGetStats(simTxRes as rpc.Api.SimulateTransactionSuccessResponse, successDatum);
+          this.storeTransactionStats(transaction as Transaction, stats);
+        } else {
+          console.log('Failed to get transaction');
+        }
       });
     } catch (error) {
       console.log('Failed to get transactions', error);
@@ -57,15 +60,6 @@ export class StellarRpcServer extends rpc.Server {
     this.transaction = tx;
     this.simTxRes = simTxResponse;
     return simTxResponse;
-  }
-
-  public async prepareTransaction(tx: Transaction | FeeBumpTransaction) {
-    const simResponse = await this.simulateTransaction(tx);
-    if (rpc.Api.isSimulationError(simResponse)) {
-      throw new Error(simResponse.error);
-    }
-
-    return assembleTransaction(tx, simResponse).build();
   }
 
   public async sendTransaction(

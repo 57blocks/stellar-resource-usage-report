@@ -103,7 +103,7 @@ export async function withExponentialBackoff<T>(
   fn: (previousFailure?: T) => Promise<T>,
   /** Condition to check when deciding whether or not to call `fn` again */
   keepWaitingIf: (result: T) => boolean,
-  /** How long to wait between the first and second call */
+  /** Maximum total duration in seconds for all retry attempts  */
   timeoutInSeconds: number,
   /** What to multiply `timeoutInSeconds` by, each subsequent attempt */
   exponentialFactor = 1.5,
@@ -125,9 +125,7 @@ export async function withExponentialBackoff<T>(
     // Wait a beat
     if (verbose) {
       console.info(
-        `Waiting ${waitTime}ms before trying again (bringing the total wait time to ${totalWaitTime}ms so far, of total ${
-          timeoutInSeconds * 1000
-        }ms)`
+        `Waiting ${waitTime}ms before trying again (bringing the total wait time to ${totalWaitTime}ms so far, of total ${timeoutInSeconds * 1000}ms)`
       );
     }
 
