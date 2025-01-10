@@ -16,13 +16,12 @@ const compat = new FlatCompat({
 });
 
 export default [
-  { ignores: ['node_modules/*', 'dist/*', 'test-contract'] },
+  {
+    ignores: ['node_modules/*', 'dist/*', 'test-contract', '**/node_modules', '**/build', '**/scripts', 'bun.build.js'],
+  },
   {
     files: ['**/*.ts', '**/*.js'],
     rules: { 'no-undef': 'off' },
-  },
-  {
-    ignores: ['**/node_modules', '**/build', '**/scripts', 'bun.build.js', 'test-contract'],
   },
   ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
   {

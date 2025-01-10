@@ -1,7 +1,9 @@
 {
   "name": "@57block/stellar-resource-usage",
   "version": "0.0.1",
+  "description": "A library that provides convenient ways to monitor and analyze the resources consumed by smart contracts during execution",
   "license": "MIT",
+  "author": "57blocks <https://github.com/57blocks>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/57blocks/stellar-resource-usage-report.git"
@@ -27,6 +29,14 @@
   "bin": {
     "dockerDev": "./command.cjs"
   },
+  "dependencies": {
+    "@colors/colors": "^1.6.0",
+    "@stellar/stellar-sdk": "^13.1.0",
+    "bun": "^1.1.38",
+    "cli-table3": "^0.6.5",
+    "globals": "^15.14.0",
+    "lodash-es": "^4.17.21"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.27.10",
     "@commitlint/cli": "^19.6.0",
@@ -35,10 +45,10 @@
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
     "@types/bun": "^1.1.14",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.10.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@vitest/coverage-v8": "2.1.8",
-    "axios": "^1.7.8",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
@@ -57,19 +67,6 @@
     "nodejs",
     "typescript"
   ],
-  "description": "",
-  "dependencies": {
-    "@colors/colors": "^1.6.0",
-    "@stellar/stellar-sdk": "^13.1.0",
-    "@types/lodash-es": "^4.17.12",
-    "bun": "^1.1.38",
-    "chalk": "^5.3.0",
-    "chalk-template": "^1.1.0",
-    "cli-table3": "^0.6.5",
-    "globals": "^15.14.0",
-    "lodash-es": "^4.17.21",
-    "tty-table": "^4.2.3"
-  },
   "files": [
     "dist",
     "docs",
