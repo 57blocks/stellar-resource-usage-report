@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 0.0.3
+
+### Patch Changes
+
+- ad2c343: feat: add StellarRpcServer
+
 ## 1.1.9
 
 ### Patch Changes
