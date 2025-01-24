@@ -1,5 +1,5 @@
 declare module '@57block/stellar-resource-usage' {
-  import { Keypair, Transaction, rpc } from '@stellar/stellar-sdk';
+  import { Keypair, Transaction, rpc, FeeBumpTransaction } from '@stellar/stellar-sdk';
 
   export interface anyObj {
     [key: string]: any;
@@ -77,4 +77,30 @@ declare module '@57block/stellar-resource-usage' {
   export function getStats(props: CalcResourceProps): Promise<anyObj>;
 
   export function ResourceUsageClient<T>(Client: any, options: ClientOptions): Promise<ResourceUsageClientInstance & T>;
+
+  interface HashMapValue {
+    sendTxRes: rpc.Api.SendTransactionResponse;
+    transaction: Transaction | FeeBumpTransaction | undefined;
+    simTxRes: rpc.Api.SimulateTransactionResponse | undefined;
+  }
+
+  export class StellarRpcServer extends rpc.Server {
+    storedStats: ContractStore;
+
+    constructor(serverURL: string, opts?: rpc.Server.Options);
+
+    printTable(): Promise<void>;
+
+    simulateTransaction(
+      tx: Transaction | FeeBumpTransaction,
+      resourceLeeway?: rpc.Server.ResourceLeeway
+    ): Promise<rpc.Api.SimulateTransactionResponse>;
+
+    sendTransaction(transaction: Transaction | FeeBumpTransaction): Promise<rpc.Api.SendTransactionResponse>;
+
+    storeTransactionStats(
+      tx: Transaction | FeeBumpTransaction,
+      stats: Record<keyof TXResourceUsageStats, number | undefined>
+    ): void;
+  }
 }
