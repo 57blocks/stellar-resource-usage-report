@@ -1,6 +1,6 @@
 {
   "name": "@57block/stellar-resource-usage",
-  "version": "0.0.2",
+  "version": "0.0.2-rc.1",
   "description": "A library that provides convenient ways to monitor and analyze the resources consumed by smart contracts during execution",
   "license": "MIT",
   "author": "57blocks <https://github.com/57blocks>",
