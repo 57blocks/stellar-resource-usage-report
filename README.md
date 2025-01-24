@@ -9,7 +9,7 @@ Welcome to Stellar Resource Usage! This tool is designed for Web3 developers wor
 
 # Features Overview
 
-1. **Real-Time Resource Monitoring**: The tool monitors resource usage in real-time during smart contract execution, including `cpu_insns`, `mem_bytes` ect. for more information,see the [supported resource documentation](./docs/RESOURCE_LIMITS_DESC.md).
+1. **Real-Time Resource Monitoring**: The tool monitors resource usage in real-time during smart contract execution, including `cpu_insns`, `mem_bytes` etc. for more information,see the [supported resource documentation](./docs/RESOURCE_LIMITS_DESC.md).
 
 
 1. **Detailed Report Generation**: After contract execution, the tool generates a detailed report to help developers gain deeper insights into resource usage.
@@ -48,7 +48,7 @@ bun add @57block/stellar-resource-usage
 
 1. Make sure Docker Desktop is running on your system
 
-2. Start the unlimited network simulator. Executing the code below will launch a [stellar/quickstart](https://github.com/stellar/quickstart) image. You can also customize your own image according to the *quickstart* if you want.
+2. Start the __unlimited__ network simulator. Executing the code below will launch a [stellar/quickstart](https://github.com/stellar/quickstart) image. You can also customize your own image according to the *quickstart* if you want.
 
  _Note: Using npx requires you to install npm globally in advance, more info please refer to [npx](https://docs.npmjs.com/cli/v10/commands/npx)_
 
@@ -61,102 +61,6 @@ npx dockerDev [--port=your port] # The default port is 8000
 4. Using `@57block/stellar-resource-usage` in your code
 
 **Scenario 1**
-
-When you generate a typescript module using the `stellar contract bindings typescript` command, and use the `Client` in this module to call and execute the contract functions.
-<!-- Please refer to [the link](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli#stellar-contract-bindings-typescript) and/or [deploy.example.ts](./deploy.example.ts) if you want to learn more about **bindings**. -->
-
-```ts
-import { Keypair } from "@stellar/stellar-sdk";
-import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
-
-import { Client, networks } from "yourPath/to/module";
-
-const callContract = async () => {
-  try {
-    const keypair = Keypair.fromSecret(Bun.env.SECRET!);
-    const pubkey = keypair.publicKey();
-
-    const { signTransaction } = basicNodeSigner(
-      keypair,
-      networks.standalone.networkPassphrase
-    );
-
-    const _contract = new Client({
-      contractId: networks.standalone.contractId,
-      networkPassphrase: networks.standalone.networkPassphrase,
-      rpcUrl: "http://localhost:8000/soroban/rpc",
-      publicKey: pubkey, // process.env.SOROBAN_PUBLIC_KEY,
-      allowHttp: true,
-      signTransaction,
-    });
-    const res = await _contract.run({
-      cpu: 700,
-      mem: 180,
-      set: 20,
-      get: 40,
-      events: 1,
-      _txn: Buffer.alloc(71_680),
-    });
-
-    await res.signAndSend();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-callContract();
-
-```
-
-While using `@57block/stellar-resource-usage`:
-
-```ts
-import { Keypair } from "@stellar/stellar-sdk";
-import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
-// Add ResourceUsageClient
-+ import { ResourceUsageClient } from "@57block/stellar-resource-usage";
-import { Client, networks } from "./package/typescriptBinding/src";
-
-const callContract = async () => {
-  try {
-    const keypair = Keypair.fromSecret(Bun.env.SECRET!);
-    const pubkey = keypair.publicKey();
-
-    const { signTransaction } = basicNodeSigner(
-      keypair,
-      networks.standalone.networkPassphrase
-    );
-
--    const _contract = new Client({
-+    const _contract = await ResourceUsageClient<Client>(Client, {
-      contractId: networks.standalone.contractId,
-      networkPassphrase: networks.standalone.networkPassphrase,
-      rpcUrl: "http://localhost:8000/soroban/rpc",
-      publicKey: pubkey, // process.env.SOROBAN_PUBLIC_KEY,
-      allowHttp: true,
-      signTransaction,
-    });
-    const res = await _contract.run({
-      cpu: 700,
-      mem: 180,
-      set: 20,
-      get: 40,
-      events: 1,
-      _txn: Buffer.alloc(71_680),
-    });
-
-    await res.signAndSend();
-
-+   _contract.printTable();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-callContract();
-```
-
-**Scenario 2**
 
 Using `StellarRpcServer`.
 
@@ -278,6 +182,102 @@ if (rpc.Api.isSimulationSuccess(simRes)) {
   await rpcServer.sendTransaction(assembledTx);
 + rpcServer.printTable();
 }
+```
+
+**Scenario 2**
+
+When you generate a typescript module using the `stellar contract bindings typescript` command, and use the `Client` in this module to call and execute the contract functions.
+<!-- Please refer to [the link](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli#stellar-contract-bindings-typescript) and/or [deploy.example.ts](./deploy.example.ts) if you want to learn more about **bindings**. -->
+
+```ts
+import { Keypair } from "@stellar/stellar-sdk";
+import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
+
+import { Client, networks } from "yourPath/to/module";
+
+const callContract = async () => {
+  try {
+    const keypair = Keypair.fromSecret(Bun.env.SECRET!);
+    const pubkey = keypair.publicKey();
+
+    const { signTransaction } = basicNodeSigner(
+      keypair,
+      networks.standalone.networkPassphrase
+    );
+
+    const _contract = new Client({
+      contractId: networks.standalone.contractId,
+      networkPassphrase: networks.standalone.networkPassphrase,
+      rpcUrl: "http://localhost:8000/soroban/rpc",
+      publicKey: pubkey, // process.env.SOROBAN_PUBLIC_KEY,
+      allowHttp: true,
+      signTransaction,
+    });
+    const res = await _contract.run({
+      cpu: 700,
+      mem: 180,
+      set: 20,
+      get: 40,
+      events: 1,
+      _txn: Buffer.alloc(71_680),
+    });
+
+    await res.signAndSend();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+callContract();
+
+```
+
+While using `@57block/stellar-resource-usage`:
+
+```ts
+import { Keypair } from "@stellar/stellar-sdk";
+import { basicNodeSigner } from "@stellar/stellar-sdk/contract";
+// Add ResourceUsageClient
++ import { ResourceUsageClient } from "@57block/stellar-resource-usage";
+import { Client, networks } from "./package/typescriptBinding/src";
+
+const callContract = async () => {
+  try {
+    const keypair = Keypair.fromSecret(Bun.env.SECRET!);
+    const pubkey = keypair.publicKey();
+
+    const { signTransaction } = basicNodeSigner(
+      keypair,
+      networks.standalone.networkPassphrase
+    );
+
+-    const _contract = new Client({
++    const _contract = await ResourceUsageClient<Client>(Client, {
+      contractId: networks.standalone.contractId,
+      networkPassphrase: networks.standalone.networkPassphrase,
+      rpcUrl: "http://localhost:8000/soroban/rpc",
+      publicKey: pubkey, // process.env.SOROBAN_PUBLIC_KEY,
+      allowHttp: true,
+      signTransaction,
+    });
+    const res = await _contract.run({
+      cpu: 700,
+      mem: 180,
+      set: 20,
+      get: 40,
+      events: 1,
+      _txn: Buffer.alloc(71_680),
+    });
+
+    await res.signAndSend();
+
++   _contract.printTable();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+callContract();
 ```
 
 5. Execute the file
