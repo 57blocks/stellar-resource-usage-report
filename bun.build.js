@@ -4,6 +4,7 @@ const results = await Bun.build({
   outdir: './dist',
   sourcemap: 'inline',
   minify: true,
+  target: 'node',
 });
 
 if (results.success == false) {
