@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 0.0.3
+
+### Patch Changes
+
+- eba0f97: updated the build process
+
 ## 0.0.2
 
 ### Patch Changes
