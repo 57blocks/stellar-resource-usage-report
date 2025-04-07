@@ -5,6 +5,7 @@ const results = await Bun.build({
   sourcemap: 'inline',
   minify: true,
   target: 'node',
+  external: ['@stellar/stellar-sdk'],
 });
 
 if (results.success == false) {
