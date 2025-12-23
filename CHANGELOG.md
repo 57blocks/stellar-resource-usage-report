@@ -1,5 +1,11 @@
 # STELLAR RESOURCE USAGE CHANGELOG
 
+## 0.0.4
+
+### Patch Changes
+
+- 67c29d8: sdk upgrade
+
 ## 0.0.3
 
 ### Patch Changes
