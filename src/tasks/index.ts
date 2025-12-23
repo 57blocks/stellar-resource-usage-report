@@ -66,7 +66,7 @@ export const handleTxToGetStats = (
     entry_bytes: entrySize,
     entry_reads: footprint.readOnly().length,
     entry_writes: footprint.readWrite().length,
-    read_bytes: resources.readBytes(),
+    read_bytes: resources.diskReadBytes(),
     write_bytes: resources.writeBytes(),
     min_txn_bytes: successfulTx.envelopeXdr.toXDR().length,
   };
