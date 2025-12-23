@@ -89,7 +89,7 @@ describe('StellarRpcServer', async () => {
         .setSorobanData(
           simRes.transactionData
             .setResourceFee(100_000_000)
-            .setResources(MAX_U32, resources.readBytes(), resources.writeBytes())
+            .setResources(MAX_U32, resources.diskReadBytes(), resources.writeBytes())
             .build()
         )
         .build();
